@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="custom_max_width">400dp</dimen>
+    <dimen name="custom_min_width">400dp</dimen>
+    <dimen name="regular_max_width">300dp</dimen>
+    <dimen name="regular_min_width">250dp</dimen>
+</resources>
