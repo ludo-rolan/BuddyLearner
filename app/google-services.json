@@ -1,0 +1,121 @@
+{
+  "project_info": {
+    "project_number": "945684578493",
+    "project_id": "projettutorat-8e6ae",
+    "storage_bucket": "projettutorat-8e6ae.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:945684578493:android:993a0510ac5e4eb0c337d4",
+        "android_client_info": {
+          "package_name": "com.example.buddylearner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "945684578493-o46fd4m1qee2s5rvtqc0ai4h26g1j2kg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.buddylearner",
+            "certificate_hash": "aa8cf92b77ab84fde726b290772cc628f74112c1"
+          }
+        },
+        {
+          "client_id": "945684578493-0fdtu49tcorp1nptkld2280a264babm0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUW5p7qNEnum0m37kSLi1HjXY9_354oHk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "945684578493-0fdtu49tcorp1nptkld2280a264babm0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:945684578493:android:1bd2ad625a304fb2c337d4",
+        "android_client_info": {
+          "package_name": "com.tutorat.firebase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "945684578493-gr96v8mqn8e5dq0af0lt0bjov6gkbuij.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tutorat.firebase",
+            "certificate_hash": "aa8cf92b77ab84fde726b290772cc628f74112c1"
+          }
+        },
+        {
+          "client_id": "945684578493-0fdtu49tcorp1nptkld2280a264babm0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUW5p7qNEnum0m37kSLi1HjXY9_354oHk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "945684578493-0fdtu49tcorp1nptkld2280a264babm0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:945684578493:android:d19ea3e2e0996b41c337d4",
+        "android_client_info": {
+          "package_name": "com.tutorat.projettutorat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "945684578493-97vs0300j9d9p7k2vpmsivi80els9m9v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tutorat.projettutorat",
+            "certificate_hash": "aa8cf92b77ab84fde726b290772cc628f74112c1"
+          }
+        },
+        {
+          "client_id": "945684578493-0fdtu49tcorp1nptkld2280a264babm0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUW5p7qNEnum0m37kSLi1HjXY9_354oHk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "945684578493-0fdtu49tcorp1nptkld2280a264babm0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

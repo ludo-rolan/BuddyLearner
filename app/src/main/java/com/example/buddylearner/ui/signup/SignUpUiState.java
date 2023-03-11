@@ -12,14 +12,16 @@ public class SignUpUiState {
     private Integer passwordError;
     private boolean isDataValid;
 
-    SignUpUiState(@Nullable Integer usernameError, @Nullable Integer passwordError) {
+    SignUpUiState(@Nullable Integer usernameError, @Nullable Integer emailError, @Nullable Integer passwordError) {
         this.usernameError = usernameError;
+        this.emailError = emailError;
         this.passwordError = passwordError;
         this.isDataValid = false;
     }
 
     SignUpUiState(boolean isDataValid) {
         this.usernameError = null;
+        this.emailError = null;
         this.passwordError = null;
         this.isDataValid = isDataValid;
     }
@@ -30,13 +32,13 @@ public class SignUpUiState {
     }
 
     @Nullable
-    Integer getPasswordError() {
-        return passwordError;
+    Integer getEmailError() {
+        return emailError;
     }
 
     @Nullable
-    Integer getEmailError() {
-        return emailError;
+    Integer getPasswordError() {
+        return passwordError;
     }
 
     boolean isDataValid() {

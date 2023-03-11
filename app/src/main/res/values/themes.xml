@@ -2,14 +2,14 @@
     <!-- Base application theme. -->
 
     <!-- Ajout d'autres thèmes au projet -->
-<!--    <style name="AppBaseTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar"></style>-->
-<!--    <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar"></style>-->
-<!--    <style name="AppBaseTheme.App" parent="AppTheme"></style>-->
+    <!--    <style name="AppBaseTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar"></style>-->
+    <!--    <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar"></style>-->
+    <!--    <style name="AppBaseTheme.App" parent="AppTheme"></style>-->
 
     <!-- parent initial du thème du projet -->
     <!-- parent="Theme.MaterialComponents.DayNight.DarkActionBar" -->
-<!--    <style name="Theme.BuddyLearner" parent="AppBaseTheme.App">-->
-<!--    <style name="Theme.BuddyLearner" parent="Theme.Material3.DayNight.NoActionBar">-->
+    <!--    <style name="Theme.BuddyLearner" parent="AppBaseTheme.App">-->
+    <!--    <style name="Theme.BuddyLearner" parent="Theme.Material3.DayNight.NoActionBar">-->
     <style name="Theme.BuddyLearner" parent="Theme.Material3.DynamicColors.DayNight">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>
@@ -23,4 +23,13 @@
         <item name="android:statusBarColor" tools:targetApi="21">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="Theme.BuddyLearner.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.BuddyLearner.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.BuddyLearner.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

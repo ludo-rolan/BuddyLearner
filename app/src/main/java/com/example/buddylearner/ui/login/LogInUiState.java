@@ -10,6 +10,12 @@ public class LogInUiState {
     private Integer passwordError;
     private boolean isDataValid;
 
+
+    // TODO: expérience de modification de mise à jour des champs de l'ui login
+
+    // TODO: expérience de modification de mise à jour des champs de l'ui login
+
+
     LogInUiState(@Nullable Integer usernameError, @Nullable Integer passwordError) {
         this.usernameError = usernameError;
         this.passwordError = passwordError;

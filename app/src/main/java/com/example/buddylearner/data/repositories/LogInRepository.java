@@ -1,26 +1,26 @@
 package com.example.buddylearner.data.repositories;
 
-import com.example.buddylearner.data.datasources.LoginDataSource;
+import com.example.buddylearner.data.datasources.LogInDataSource;
 import com.example.buddylearner.data.model.User;
 
-public class LoginRepository {
+public class LogInRepository {
 
-    private static volatile LoginRepository instance;
+    private static volatile LogInRepository instance;
 
-    private LoginDataSource dataSource;
+    private LogInDataSource dataSource;
 
     // If user credentials will be cached in local storage, it is recommended it be encrypted
     // @see https://developer.android.com/training/articles/keystore
     private User user = null;
 
     // private constructor : singleton access
-    private LoginRepository(LoginDataSource dataSource) {
+    private LogInRepository(LogInDataSource dataSource) {
         this.dataSource = dataSource;
     }
 
-    public static LoginRepository getInstance(LoginDataSource dataSource) {
+    public static LogInRepository getInstance(LogInDataSource dataSource) {
         if (instance == null) {
-            instance = new LoginRepository(dataSource);
+            instance = new LogInRepository(dataSource);
         }
         return instance;
     }
@@ -40,7 +40,7 @@ public class LoginRepository {
         // @see https://developer.android.com/training/articles/keystore
     }
 
-    public LoggingInResult<User> login(String username, String password) {
+    public LoggingInResult<User> logIn(String username, String password) {
         // handle login
         LoggingInResult<User> result = dataSource.login(username, password);
         if (result instanceof LoggingInResult.Success) {
