@@ -1,36 +1,31 @@
 package com.example.buddylearner.data.repositories;
 
-import androidx.lifecycle.MutableLiveData;
-
-import com.example.buddylearner.data.datasources.FirebaseDataSource;
+import com.example.buddylearner.data.datasources.HomeDataSource;
 import com.example.buddylearner.data.datasources.LogInDataSource;
 import com.example.buddylearner.data.model.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class LogInRepository {
+public class HomeRepository {
 
-    private static volatile LogInRepository instance;
+    private static volatile HomeRepository instance;
 
-    private LogInDataSource dataSource;
+    private HomeDataSource dataSource;
 
     // If user credentials will be cached in local storage, it is recommended it be encrypted
     // @see https://developer.android.com/training/articles/keystore
     private User user = null;
 
     // private constructor : singleton access
-    private LogInRepository(LogInDataSource dataSource) {
+    private HomeRepository(HomeDataSource dataSource) {
         this.dataSource = dataSource;
     }
 
-    public static LogInRepository getInstance(LogInDataSource dataSource) {
+    public static HomeRepository getInstance(HomeDataSource dataSource) {
         if (instance == null) {
-            instance = new LogInRepository(dataSource);
+            instance = new HomeRepository(dataSource);
         }
         return instance;
     }
@@ -41,30 +36,20 @@ public class LogInRepository {
 
     public void logout() {
         user = null;
-        instance.logout();
+        dataSource.logout();
     }
 
-    private void setLoggedInUser(User user) {
+    private void setHomeUser(User user) {
         this.user = user;
         // If user credentials will be cached in local storage, it is recommended it be encrypted
         // @see https://developer.android.com/training/articles/keystore
     }
 
-    public LoggingInResult<User> logIn(
-            MutableLiveData<Boolean> firstConnectionSuccessListener,
-            OnFailureListener firstConnectionFailureListener,
-            String username,
-            String password
-    ) {
+    public HomeResult<User> logIn(String username, String password) {
         // handle login
-        LoggingInResult<User> result = dataSource.login(
-                firstConnectionSuccessListener,
-                firstConnectionFailureListener,
-                username,
-                password
-        );
-        if (result instanceof LoggingInResult.Success) {
-            setLoggedInUser(((LoggingInResult.Success<User>) result).getData());
+        HomeResult<User> result = dataSource.login(username, password);
+        if (result instanceof HomeResult.Success) {
+            setHomeUser(((HomeResult.Success<User>) result).getData());
         }
         return result;
     }

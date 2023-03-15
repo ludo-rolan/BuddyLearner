@@ -12,20 +12,31 @@
         android:theme="@style/Theme.BuddyLearner"
         tools:targetApi="31">
         <activity
+            android:name=".ui.topics.TopicsActivity"
+            android:exported="true"
+            android:label="@string/title_activity_topics"
+            android:theme="@style/Theme.BuddyLearner"
+            android:parentActivityName=".ui.base.HomeActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.base.HomeActivity" />
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+        </activity>
+        <activity
             android:name=".ui.base.HomeActivity"
             android:exported="true"
             android:label="@string/title_activity_home"
             android:resizeableActivity="true"
             android:theme="@style/Theme.BuddyLearner.NoActionBar"
             tools:targetApi="24">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
-        <!-- <activity -->
-        <!-- android:name=".ui.register.RegisterActivity" -->
-        <!-- android:exported="false" /> -->
         <activity
             android:name=".ui.signup.SignUpActivity"
             android:exported="true">
@@ -41,10 +52,10 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.signup.SignUpActivity" />
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

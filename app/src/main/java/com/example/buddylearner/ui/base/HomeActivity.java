@@ -1,16 +1,27 @@
 package com.example.buddylearner.ui.base;
 
+import static android.content.ContentValues.TAG;
+
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.Menu;
+import android.widget.TextView;
 
 import com.example.buddylearner.R;
 import com.example.buddylearner.databinding.ActivityHomeBinding;
+import com.example.buddylearner.databinding.NavHeaderHomeBinding;
+import com.example.buddylearner.ui.login.LogInActivity;
+import com.example.buddylearner.ui.login.LogInViewModel;
+import com.example.buddylearner.ui.login.LogInViewModelFactory;
+import com.example.buddylearner.ui.topics.TopicsActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
@@ -23,44 +34,106 @@ import java.util.Objects;
 public class HomeActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
+    private HomeViewModel homeViewModel;
 
-    ActivityHomeBinding binding;
+    ActivityHomeBinding activityHomeBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityHomeBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        activityHomeBinding = ActivityHomeBinding.inflate(getLayoutInflater());
+        setContentView(activityHomeBinding.getRoot());
 
-        setSupportActionBar(binding.appBarHome.toolbar);
+        setSupportActionBar(activityHomeBinding.appBarHome.toolbar);
 
-
-        if (binding.appBarHome.fab != null) {
-            binding.appBarHome.fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+        if (activityHomeBinding.appBarHome.fab != null) {
+            activityHomeBinding.appBarHome.fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show());
         }
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_home);
         assert navHostFragment != null;
         NavController navController = navHostFragment.getNavController();
 
-        NavigationView navigationView = binding.navView;
+        NavigationView navigationView = activityHomeBinding.navView;
         if (navigationView != null) {
 
             mAppBarConfiguration = new AppBarConfiguration.Builder(
-                    R.id.nav_transform, R.id.nav_reflow, R.id.nav_slideshow, R.id.nav_settings)
-                    .setOpenableLayout(binding.drawerLayout)
+                    R.id.nav_transform,
+                    R.id.nav_reflow,
+                    R.id.nav_slideshow,
+                    R.id.nav_settings
+            )
+                    .setOpenableLayout(activityHomeBinding.drawerLayout)
                     .build();
             NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
             NavigationUI.setupWithNavController(navigationView, navController);
         }
 
-        BottomNavigationView bottomNavigationView = binding.appBarHome.contentHome.bottomNavView;
+
+        // added
+        // detect the click on a navigation drawer menu item
+        activityHomeBinding.navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.nav_topics:
+                        //activityHomeBinding.drawerLayout.close();
+                        Intent intent = new Intent(HomeActivity.this, TopicsActivity.class);
+                        startActivity(intent);
+                        return true;
+                    default: return false;
+                }
+            }
+        });
+
+        // added
+
+
+
+        homeViewModel = new ViewModelProvider(this, new HomeViewModelFactory())
+                .get(HomeViewModel.class);
+
+
+        // get users from firebase firestore
+
+        // already done before
+        //logInViewModel = new ViewModelProvider(this).get(LogInViewModel.class);
+
+        homeViewModel.loadUser(getIntent().getStringExtra("username"));
+
+        homeViewModel.getUser().observe(this, user -> {
+            // Update the UI with the retrieved items
+            // Set the user name in the navHeaderHome
+            Log.d(TAG, "HomeActivity current user: " + user.getUserName());
+//            ça ne fonctionne pas
+//            navHeaderHomeBinding.navHeaderHomeUsername.setText(user.getUserName());
+
+            // ça fonctionne, et la récupération de données et la mise à jour de l'ui
+            //TextView textView = (activityHomeBinding.drawerLayout.findViewById(R.id.nav_view).getRootView()).findViewById(R.id.nav_header_home_username);
+            //textView.setText(user.getUserName());
+
+            // ça ne fonctionne pas
+            //navHeaderHomeBinding1.navHeaderHomeUsername.setText(user.getUserName());
+
+            TextView textview =  activityHomeBinding.drawerLayout.findViewById(R.id.nav_view).findViewById(R.id.nav_header_home_username);
+            if (textview != null)
+                textview.setText(user.getUserName());
+
+        });
+
+        // get users from firebase firestore
+
+
+        BottomNavigationView bottomNavigationView = activityHomeBinding.appBarHome.contentHome.bottomNavView;
         if (bottomNavigationView != null) {
             mAppBarConfiguration = new AppBarConfiguration.Builder(
-                    R.id.nav_transform, R.id.nav_reflow, R.id.nav_slideshow)
+                    R.id.nav_transform,
+                    R.id.nav_reflow,
+                    R.id.nav_slideshow
+            )
                     // added - set navigation drawer icon
-                    .setOpenableLayout(binding.drawerLayout)
+                    .setOpenableLayout(activityHomeBinding.drawerLayout)
                     // added
                     .build();
             NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
@@ -92,9 +165,24 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
-        if (item.getItemId() == R.id.nav_settings) {
-            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_home);
-            navController.navigate(R.id.nav_settings);
+//        if (item.getItemId() == R.id.nav_settings) {
+//            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_home);
+//            navController.navigate(R.id.nav_settings);
+//        }
+
+        int itemId = item.getItemId();
+
+        switch (itemId) {
+            case R.id.nav_settings:
+                NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_home);
+                navController.navigate(R.id.nav_settings);
+                break;
+            case R.id.nav_logout:
+                homeViewModel.disconnectUser();
+                Intent intent = new Intent(HomeActivity.this, LogInActivity.class);
+                startActivity(intent);
+                break;
+            default: break;
         }
         return super.onOptionsItemSelected(item);
     }

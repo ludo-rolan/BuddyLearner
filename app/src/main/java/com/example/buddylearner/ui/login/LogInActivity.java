@@ -1,5 +1,7 @@
 package com.example.buddylearner.ui.login;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,8 +21,11 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.buddylearner.R;
+import com.example.buddylearner.data.repositories.LoggingInResult;
 import com.example.buddylearner.databinding.ActivityLoginBinding;
+import com.example.buddylearner.ui.base.HomeActivity;
 import com.example.buddylearner.ui.signup.SignUpActivity;
+import com.example.buddylearner.ui.topics.TopicsActivity;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Objects;
@@ -51,7 +56,10 @@ public class LogInActivity extends AppCompatActivity {
 
         // TODO: detect if the parent activity is sign in activity for special treatment --
 
-        if(getIntent().getComponent().getClassName().equals("com.example.buddylearner.ui.login.LogInActivity")) {
+        if(
+                getIntent().getComponent().getClassName().equals("com.example.buddylearner.ui.login.LogInActivity")
+                && getIntent().getStringExtra("username") != null
+        ) {
 
             updateUiWithLoggedInUser(getIntent());
 
@@ -67,6 +75,20 @@ public class LogInActivity extends AppCompatActivity {
 
         logInViewModel = new ViewModelProvider(this, new LogInViewModelFactory())
                 .get(LogInViewModel.class);
+
+
+        // get users from firebase firestore
+
+        // already done before
+        //logInViewModel = new ViewModelProvider(this).get(LogInViewModel.class);
+
+        logInViewModel.loadUsers();
+
+        logInViewModel.getUsers().observe(this, items -> {
+            // Update the UI with the retrieved items
+        });
+
+        // get users from firebase firestore
 
 
         final EditText logInUsernameEditText = activityLoginBinding.logInUsernameEditText;
@@ -117,7 +139,7 @@ public class LogInActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                logInViewModel.logInDataChanged(logInUsernameEditText.getText().toString(), logInPasswordEditText.getText().toString());
+                //  logInViewModel.logInDataChanged(logInUsernameEditText.getText().toString(), logInPasswordEditText.getText().toString());
             }
         };
         logInUsernameEditText.addTextChangedListener(afterTextChangedListener);
@@ -131,7 +153,70 @@ public class LogInActivity extends AppCompatActivity {
 
         logInButton.setOnClickListener(v -> {
 //                loadingProgressBar.setVisibility(View.VISIBLE);
-            logInViewModel.logIn(logInUsernameEditText.getText().toString(), logInPasswordEditText.getText().toString());
+            boolean result = logInViewModel.logIn(logInUsernameEditText.getText().toString(), logInPasswordEditText.getText().toString());
+
+            if(result) {
+
+//                Log.d(TAG, "FIRST CONNECTION: " + logInViewModel.isUserFirstConnection());
+//
+//                // TODO: Veritfy wether it's user first connexion or not to go to the right activity
+//                if(logInViewModel.isUserFirstConnection()) {
+//
+//                    Intent intent = new Intent(LogInActivity.this, TopicsActivity.class);
+//                    startActivity(intent);
+//
+//                } else {
+//
+//                    Intent intent = new Intent(LogInActivity.this, HomeActivity.class);
+//                    intent.putExtra("username", logInUsernameEditText.getText().toString());
+//                    startActivity(intent);
+//
+//                }
+
+                //logInViewModel.getFirstConnection().observe(this, firstConnection -> {});
+
+                Log.d(TAG, "FIRST CONNECTION: I'M HERE! " + logInViewModel.getFirstConnection().getValue());
+
+                // Boolean
+
+
+//                Log.d(TAG, "CURRENT USER: I'M HERE! " + logInViewModel.getFirebaseUser().getValue().getDisplayName());
+
+//                Intent intent;
+//                if(logInViewModel.getFirstConnection().getValue()) {
+//                    intent = new Intent(LogInActivity.this, TopicsActivity.class);
+//                } else {
+//                    intent = new Intent(LogInActivity.this, HomeActivity.class);
+//                    intent.putExtra("username", logInUsernameEditText.getText().toString());
+//                }
+//
+//                startActivity(intent);
+
+//                logInViewModel.getFirstConnection().observe(this, firstConnection -> {
+//
+//                    Log.d(TAG, "FIRST CONNECTION: " + firstConnection);
+//
+//                    // Update the UI with the retrieved items
+//                    Intent intent;
+//                    if(firstConnection) {
+//                        intent = new Intent(LogInActivity.this, TopicsActivity.class);
+//                    }
+//
+//                    else {
+//                        intent = new Intent(LogInActivity.this, HomeActivity.class);
+//                        intent.putExtra("username", logInUsernameEditText.getText().toString());
+//                    }
+//                    startActivity(intent);
+//                });
+
+                Intent intent = new Intent(LogInActivity.this, HomeActivity.class);
+                intent.putExtra("username", logInUsernameEditText.getText().toString());
+                startActivity(intent);
+
+            } else {
+                Snackbar.make(activityLoginBinding.getRoot(), R.string.login_failed, Snackbar.LENGTH_LONG).show();
+            }
+
         });
 
     }
@@ -170,6 +255,7 @@ public class LogInActivity extends AppCompatActivity {
         startActivity(intent);
 
         return super.onOptionsItemSelected(item);
+
     }
 
 }

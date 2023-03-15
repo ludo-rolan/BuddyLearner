@@ -54,19 +54,19 @@ public class SignUpActivity extends AppCompatActivity {
 
         signUpViewModel.getSignUpUiState().observe(this, new Observer<SignUpUiState>() {
             @Override
-            public void onChanged(@Nullable SignUpUiState loginFormState) {
-                if (loginFormState == null) {
+            public void onChanged(@Nullable SignUpUiState signUpUiState) {
+                if (signUpUiState == null) {
                     return;
                 }
-                signUpButton.setEnabled(loginFormState.isDataValid());
-                if (loginFormState.getUsernameError() != null) {
-                    signUpUsernameEditText.setError(getString(loginFormState.getUsernameError()));
+                signUpButton.setEnabled(signUpUiState.isDataValid());
+                if (signUpUiState.getUsernameError() != null) {
+                    signUpUsernameEditText.setError(getString(signUpUiState.getUsernameError()));
                 }
-                if (loginFormState.getEmailError() != null) {
-                    signUpEmailEditText.setError(getString(loginFormState.getEmailError()));
+                if (signUpUiState.getEmailError() != null) {
+                    signUpEmailEditText.setError(getString(signUpUiState.getEmailError()));
                 }
-                if (loginFormState.getPasswordError() != null) {
-                    signUpPasswordEditText.setError(getString(loginFormState.getPasswordError()));
+                if (signUpUiState.getPasswordError() != null) {
+                    signUpPasswordEditText.setError(getString(signUpUiState.getPasswordError()));
                 }
             }
         });
@@ -135,7 +135,7 @@ public class SignUpActivity extends AppCompatActivity {
 //                logInActivity.putExtra("currentUser", new SignedUpUserView(signUpUsernameEditText.getText().toString(),
 //                        signUpEmailEditText.getText().toString(), signUpPasswordEditText.getText().toString()));
                 logInActivity.putExtra("username", signUpUsernameEditText.getText().toString());
-                logInActivity.putExtra("password", signUpUsernameEditText.getText().toString());
+                logInActivity.putExtra("password", signUpPasswordEditText.getText().toString());
                 startActivity(logInActivity);
             }
         });

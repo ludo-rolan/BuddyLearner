@@ -11,14 +11,29 @@ import com.example.buddylearner.data.model.User;
 import com.example.buddylearner.data.repositories.SignUpRepository;
 import com.example.buddylearner.data.repositories.SigningUpResult;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class SignUpViewModel extends ViewModel {
 
     private MutableLiveData<SignUpUiState> signUpUiState = new MutableLiveData<>();
     private MutableLiveData<SignUpResult> signUpResult = new MutableLiveData<>();
     private SignUpRepository signUpRepository;
 
-    SignUpViewModel(SignUpRepository loginRepository) {
-        this.signUpRepository = loginRepository;
+    // strict regex
+    private static final String USERNAME_PATTERN =
+            "^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){2,18}[a-zA-Z0-9]$";
+    private static final Pattern usernamePattern = Pattern.compile(USERNAME_PATTERN);
+    private static final String EMAIL_PATTERN = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@" +
+            "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
+    private static final Pattern emailPattern = Pattern.compile(EMAIL_PATTERN);
+    // digit + lowercase char + uppercase char + punctuation + symbol
+    private static final String PASSWORD_PATTERN =
+            "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$";
+    private static final Pattern passwordPattern = Pattern.compile(PASSWORD_PATTERN);
+
+    SignUpViewModel(SignUpRepository signUpRepository) {
+        this.signUpRepository = signUpRepository;
     }
 
     LiveData<SignUpUiState> getSignUpUiState() {
@@ -54,33 +69,21 @@ public class SignUpViewModel extends ViewModel {
     }
 
     // A placeholder username validation check
-    private boolean isUserNameValid(String username) {
-        if (username == null) {
-            return false;
-        }
-        if (username.contains("*") || username.contains("/") || username.contains("\\") || username.contains("[")) {
-            return Patterns.GOOD_IRI_CHAR.matches("\n" +
-                    "  ^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){3,18}[a-zA-Z0-9]$");
-        } else {
-            return !username.trim().isEmpty();
-        }
+    private boolean isUserNameValid(final String username) {
+        Matcher matcher = usernamePattern.matcher(username);
+        return matcher.matches();
     }
 
     // A placeholder email validation check
-    private boolean isEmailValid(String username) {
-        if (username == null) {
-            return false;
-        }
-        if (username.contains("@")) {
-            return Patterns.EMAIL_ADDRESS.matcher(username).matches();
-        } else {
-            return !username.trim().isEmpty();
-        }
+    private boolean isEmailValid(final String username) {
+        Matcher matcher = emailPattern.matcher(username);
+        return matcher.matches();
     }
 
     // A placeholder password validation check
-    private boolean isPasswordValid(String password) {
-        return password != null && password.trim().length() > 5;
+    private boolean isPasswordValid(final String password) {
+        Matcher matcher = passwordPattern.matcher(password);
+        return matcher.matches();
     }
 
 }
