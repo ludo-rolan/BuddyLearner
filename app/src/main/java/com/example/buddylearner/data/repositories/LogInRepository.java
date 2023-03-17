@@ -12,7 +12,11 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
+import javax.annotation.concurrent.ThreadSafe;
+
+@ThreadSafe
 public class LogInRepository {
 
     private static volatile LogInRepository instance;
@@ -50,18 +54,16 @@ public class LogInRepository {
         // @see https://developer.android.com/training/articles/keystore
     }
 
-    public LoggingInResult<User> logIn(
-            MutableLiveData<Boolean> firstConnectionSuccessListener,
-            OnFailureListener firstConnectionFailureListener,
+    public synchronized LoggingInResult<User> logIn(
             String username,
-            String password
+            String password,
+            Consumer<Boolean> onResult
     ) {
         // handle login
         LoggingInResult<User> result = dataSource.login(
-                firstConnectionSuccessListener,
-                firstConnectionFailureListener,
                 username,
-                password
+                password,
+                onResult
         );
         if (result instanceof LoggingInResult.Success) {
             setLoggedInUser(((LoggingInResult.Success<User>) result).getData());
@@ -69,17 +71,17 @@ public class LogInRepository {
         return result;
     }
 
-    public boolean getUserConnectionOccurrence () {
+    public synchronized boolean getUserConnectionOccurrence () {
 
         return dataSource.isFirstConnection();
 
     }
 
-    public void getUsers(OnSuccessListener<List<User>> successListener, OnFailureListener failureListener) {
+    public synchronized void getUsers(OnSuccessListener<List<User>> successListener, OnFailureListener failureListener) {
         dataSource.allUser(successListener, failureListener);
     }
 
-    public void getUser(OnSuccessListener<User> successListener, OnFailureListener failureListener, String username) {
+    public synchronized void getUser(OnSuccessListener<User> successListener, OnFailureListener failureListener, String username) {
         dataSource.findUser(successListener, failureListener, username);
     }
 

@@ -1,5 +1,9 @@
 package com.example.buddylearner.ui.topics.main;
 
+import static android.content.ContentValues.TAG;
+
+import android.util.Log;
+
 import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -11,13 +15,14 @@ import com.example.buddylearner.data.model.TopicsCategory;
 import com.example.buddylearner.data.repositories.SignUpRepository;
 import com.example.buddylearner.data.repositories.TopicsPageRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PageViewModel extends ViewModel {
 
     private MutableLiveData<Integer> mIndex = new MutableLiveData<>();
-    private MutableLiveData<List<TopicsCategory>> topicsCategories = new MutableLiveData<>();
-    private MutableLiveData<List<Topic>> topics = new MutableLiveData<>();
+    private final MutableLiveData<List<TopicsCategory>> topicsCategories = new MutableLiveData<>();
+    private final MutableLiveData<List<Topic>> topics = new MutableLiveData<>();
     private TopicsPageRepository topicsPageRepository;
 
     public PageViewModel(TopicsPageRepository topicsPageRepository){ this.topicsPageRepository = topicsPageRepository; }
@@ -36,14 +41,14 @@ public class PageViewModel extends ViewModel {
 
     public LiveData<List<TopicsCategory>> getTopicsCategories () { return topicsCategories; }
 
-    public LiveData<List<Topic>> getTopics () { return topics; }
+    public MutableLiveData<List<Topic>> getTopics () { return topics; }
 
     public void setIndex(int index) {
         mIndex.setValue(index);
     }
 
     public void loadTopicsCategory() {
-        topicsPageRepository.getTopicsCategories(topicsCategories::setValue, Throwable::printStackTrace);
+        topicsPageRepository.getTopicsCategories(topicsCategories::postValue, Throwable::printStackTrace);
     }
 
     public void loadTopics() {

@@ -45,15 +45,6 @@ public class HomeRepository {
         // @see https://developer.android.com/training/articles/keystore
     }
 
-    public HomeResult<User> logIn(String username, String password) {
-        // handle login
-        HomeResult<User> result = dataSource.login(username, password);
-        if (result instanceof HomeResult.Success) {
-            setHomeUser(((HomeResult.Success<User>) result).getData());
-        }
-        return result;
-    }
-
     public boolean getUserConnectionOccurrence () {
 
         return dataSource.isFirstConnection();

@@ -1,9 +1,15 @@
 package com.example.buddylearner.ui.topics.main;
 
+import static android.content.ContentValues.TAG;
+
+import android.nfc.Tag;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -13,6 +19,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.buddylearner.databinding.FragmentTopicsBinding;
+import com.example.buddylearner.ui.topics.TopicGridViewAdapter;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -23,6 +30,12 @@ public class PlaceholderFragment extends Fragment {
 
     private PageViewModel pageViewModel;
     private FragmentTopicsBinding binding;
+    private GridView gridView;
+
+    String [] categoriesTopics = {
+            "engineering",
+            "management"
+    };
 
     public static PlaceholderFragment newInstance(int index) {
         PlaceholderFragment fragment = new PlaceholderFragment();
@@ -35,7 +48,9 @@ public class PlaceholderFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        pageViewModel = new ViewModelProvider(this).get(PageViewModel.class);
+//        pageViewModel = new ViewModelProvider(this).get(PageViewModel.class);
+        pageViewModel = new ViewModelProvider(this, new TopicsPageViewModelFactory())
+                .get(PageViewModel.class);
         int index = 1;
         if (getArguments() != null) {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
@@ -52,12 +67,36 @@ public class PlaceholderFragment extends Fragment {
         View root = binding.getRoot();
 
         final TextView textView = binding.sectionLabel;
+
         pageViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);
             }
         });
+
+
+        gridView = binding.topicsGridview;
+
+        pageViewModel.loadTopicsCategory();
+
+//        if(pageViewModel.getTopicsCategories() != null)
+//            Log.d(TAG, "first topic category: " + pageViewModel.getTopicsCategories().get(0));
+
+        pageViewModel.getTopicsCategories().observe(getViewLifecycleOwner(), topicsCategories -> {
+            TopicGridViewAdapter topicGridViewAdapter = new TopicGridViewAdapter(
+                    getContext(),
+                    topicsCategories
+            );
+            gridView.setAdapter(topicGridViewAdapter);
+            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                }
+            });
+        });
+
         return root;
     }
 

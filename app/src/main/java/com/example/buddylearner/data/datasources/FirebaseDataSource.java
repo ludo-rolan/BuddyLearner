@@ -5,11 +5,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class FirebaseDataSource {
 
-    public static FirebaseAuth mAuth = null;
-    public static FirebaseFirestore mFirebaseFirestore = null;
+    private FirebaseAuth mAuth = null;
+    private FirebaseFirestore mFirebaseFirestore = null;
 
 //    singleton design pattern implemented for getting firebase authentication
-    public static FirebaseAuth getFirebaseAuthInstance () {
+    public  FirebaseAuth getFirebaseAuthInstance () {
         if(mAuth == null) {
             mAuth = FirebaseAuth.getInstance();
             return mAuth;
@@ -18,7 +18,7 @@ public class FirebaseDataSource {
     }
 
 //    singleton design pattern implemented for getting firebase firestore
-    public static FirebaseFirestore getFirebaseFirestoreInstance () {
+    public  FirebaseFirestore getFirebaseFirestoreInstance () {
         if(mFirebaseFirestore == null) {
             mFirebaseFirestore = FirebaseFirestore.getInstance();
             return mFirebaseFirestore;

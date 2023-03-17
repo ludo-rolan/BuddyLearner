@@ -175,22 +175,22 @@ public class LogInActivity extends AppCompatActivity {
 
                 //logInViewModel.getFirstConnection().observe(this, firstConnection -> {});
 
-                Log.d(TAG, "FIRST CONNECTION: I'M HERE! " + logInViewModel.getFirstConnection().getValue());
+                Log.d(TAG, "FIRST CONNECTION: I'M HERE! " + logInViewModel.getFirstConnection());
 
                 // Boolean
 
 
 //                Log.d(TAG, "CURRENT USER: I'M HERE! " + logInViewModel.getFirebaseUser().getValue().getDisplayName());
 
-//                Intent intent;
-//                if(logInViewModel.getFirstConnection().getValue()) {
-//                    intent = new Intent(LogInActivity.this, TopicsActivity.class);
-//                } else {
-//                    intent = new Intent(LogInActivity.this, HomeActivity.class);
-//                    intent.putExtra("username", logInUsernameEditText.getText().toString());
-//                }
-//
-//                startActivity(intent);
+                Intent intent;
+                if(logInViewModel.getIsFirstConnection()) {
+                    intent = new Intent(LogInActivity.this, TopicsActivity.class);
+                } else {
+                    intent = new Intent(LogInActivity.this, HomeActivity.class);
+                    intent.putExtra("username", logInUsernameEditText.getText().toString());
+                }
+
+                startActivity(intent);
 
 //                logInViewModel.getFirstConnection().observe(this, firstConnection -> {
 //
@@ -209,9 +209,13 @@ public class LogInActivity extends AppCompatActivity {
 //                    startActivity(intent);
 //                });
 
-                Intent intent = new Intent(LogInActivity.this, HomeActivity.class);
-                intent.putExtra("username", logInUsernameEditText.getText().toString());
-                startActivity(intent);
+
+                Log.d(TAG, "FIRST CONNECTION: I'M HERE FOR ISFIRSTCONNECTION! " + logInViewModel.getIsFirstConnection());
+
+
+//                Intent intent = new Intent(LogInActivity.this, HomeActivity.class);
+//                intent.putExtra("username", logInUsernameEditText.getText().toString());
+//                startActivity(intent);
 
             } else {
                 Snackbar.make(activityLoginBinding.getRoot(), R.string.login_failed, Snackbar.LENGTH_LONG).show();

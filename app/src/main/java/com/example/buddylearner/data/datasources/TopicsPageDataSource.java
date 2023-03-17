@@ -20,18 +20,22 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class TopicsPageDataSource {
 
 
+    FirebaseDataSource dataSource = new FirebaseDataSource();
+
+
     public void allTopicsCategories(OnSuccessListener<List<TopicsCategory>> successListener, OnFailureListener failureListener) {
-        FirebaseDataSource.getFirebaseFirestoreInstance()
-                .collection("topicsCategory")
+        dataSource.getFirebaseFirestoreInstance()
+                .collection("topicsCategories")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     List<TopicsCategory> topicsCategories = new ArrayList<>();
                     for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                        TopicsCategory topicsCategory = new TopicsCategory(documentSnapshot.getString("name"));
+                        TopicsCategory topicsCategory = documentSnapshot.toObject(TopicsCategory.class);
                         topicsCategories.add(topicsCategory);
                     }
                     successListener.onSuccess(topicsCategories);
@@ -41,13 +45,13 @@ public class TopicsPageDataSource {
 
 
     public void allTopics(OnSuccessListener<List<Topic>> successListener, OnFailureListener failureListener) {
-        FirebaseDataSource.getFirebaseFirestoreInstance()
+        dataSource.getFirebaseFirestoreInstance()
                 .collection("topics")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     List<Topic> topics = new ArrayList<>();
                     for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                        Topic topic = new Topic(documentSnapshot.getString("name"));
+                        Topic topic = documentSnapshot.toObject(Topic.class);
                         topics.add(topic);
                     }
                     successListener.onSuccess(topics);

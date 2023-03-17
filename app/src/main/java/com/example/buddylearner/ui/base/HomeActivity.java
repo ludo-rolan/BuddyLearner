@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.widget.TextView;
 
 import com.example.buddylearner.R;
+import com.example.buddylearner.data.model.User;
 import com.example.buddylearner.databinding.ActivityHomeBinding;
 import com.example.buddylearner.databinding.NavHeaderHomeBinding;
 import com.example.buddylearner.ui.login.LogInActivity;
@@ -19,6 +20,7 @@ import com.example.buddylearner.ui.topics.TopicsActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProvider;
@@ -78,7 +80,7 @@ public class HomeActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.nav_topics:
-                        //activityHomeBinding.drawerLayout.close();
+                        activityHomeBinding.drawerLayout.close();
                         Intent intent = new Intent(HomeActivity.this, TopicsActivity.class);
                         startActivity(intent);
                         return true;
@@ -100,7 +102,16 @@ public class HomeActivity extends AppCompatActivity {
         // already done before
         //logInViewModel = new ViewModelProvider(this).get(LogInViewModel.class);
 
+        homeViewModel.loadUsers();
+        homeViewModel.getUsers().observe(this, users -> {
+            Log.d(TAG, "liste des utilisateurs : " + users.get(0).getUserName());
+            for (User user: users) {
+                Log.d(TAG, "username : " + user.getUserName());
+            }
+        });
+
         homeViewModel.loadUser(getIntent().getStringExtra("username"));
+        //homeViewModel.loadUser(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
 
         homeViewModel.getUser().observe(this, user -> {
             // Update the UI with the retrieved items

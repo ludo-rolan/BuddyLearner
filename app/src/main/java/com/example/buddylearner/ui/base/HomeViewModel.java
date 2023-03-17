@@ -12,6 +12,7 @@ import com.example.buddylearner.R;
 import com.example.buddylearner.data.model.User;
 import com.example.buddylearner.data.repositories.HomeRepository;
 import com.example.buddylearner.data.repositories.LoggingInResult;
+import com.google.firebase.database.GenericTypeIndicator;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -46,12 +47,13 @@ public class HomeViewModel extends ViewModel {
 
     // méthode qui permet de récupérer les utilisateurs
     public LiveData<List<User>> getUsers() {
+        //Log.d(TAG, "users data type : " + users.getValue().getClass());
         return users;
     }
 
     // méthode qui permet de recharger les utilisateurs
     public void loadUsers() {
-        homeRepository.getUsers(users::setValue, Throwable::printStackTrace);
+        homeRepository.getUsers(users::postValue, Throwable::printStackTrace);
     }
 
     public LiveData<User> getUser() { return user; }

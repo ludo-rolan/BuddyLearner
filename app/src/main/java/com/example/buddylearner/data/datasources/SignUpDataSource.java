@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentReference;
 
 import java.io.IOException;
@@ -23,6 +24,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public class SignUpDataSource {
+
+    FirebaseDataSource dataSource = new FirebaseDataSource();
 
     public SigningUpResult<User> signUp(String username, String email, String password) {
 
@@ -36,7 +39,7 @@ public class SignUpDataSource {
 
 
             // Add a new document with declared id
-            FirebaseDataSource.getFirebaseFirestoreInstance()
+            dataSource.getFirebaseFirestoreInstance()
                     .collection("users")
                     .document(username)
                     .set(signUpUser)
@@ -55,8 +58,8 @@ public class SignUpDataSource {
 
 
             // Add new user to FirebaseAuth
-            FirebaseDataSource.getFirebaseAuthInstance()
-                    .createUserWithEmailAndPassword(email, password)
+            dataSource.getFirebaseAuthInstance()
+                    .signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
@@ -65,6 +68,7 @@ public class SignUpDataSource {
                                 Log.d(TAG, "createUserWithEmail:success");
 //                                FirebaseUser currentUser = FirebaseDataSource.getFirebaseAuthInstance().getCurrentUser();
 //                                updateUI(user);
+
 
                             } else {
                                 // If sign in fails, display a message to the user.
@@ -78,13 +82,34 @@ public class SignUpDataSource {
 
 
 
+            // modifier le nom d'utilisateur firebase auth
+            FirebaseUser user = dataSource.getFirebaseAuthInstance().getCurrentUser();
+
+            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                    .setDisplayName(username)
+                    .build();
+
+            user.updateProfile(profileUpdates)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Log.d(TAG, "Le nom d'utilisateur a été modifié avec succès !");
+                            } else {
+                                Log.e(TAG, "Une erreur s'est produite lors de la modification du nom d'utilisateur :", task.getException());
+                            }
+                        }
+                    });
+
+
+
 
 
             // Add Uid to firebase firestore user document
-            FirebaseDataSource.getFirebaseFirestoreInstance()
+            dataSource.getFirebaseFirestoreInstance()
                     .collection("users")
                     .document(username)
-                    .update("userId", FirebaseDataSource.getFirebaseAuthInstance().getCurrentUser().getUid())
+                    .update("userId", dataSource.getFirebaseAuthInstance().getCurrentUser().getUid())
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {

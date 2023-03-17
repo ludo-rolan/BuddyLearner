@@ -57,6 +57,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
     implementation 'androidx.navigation:navigation-fragment:2.5.3'
     implementation 'androidx.navigation:navigation-ui:2.5.3'
+    // implementation 'com.google.firebase:firebase-database:20.1.0'
 
     // Add the dependencies for any other desired Firebase products
     // https://firebase.google.com/docs/android/setup#available-libraries
@@ -68,5 +69,9 @@ dependencies {
 
     // dépendance pour la découpe de fichiers lourds en petits fichiers de tailles moins importante
     implementation 'androidx.multidex:multidex:2.0.1'
+
+
+    // add ApiFuture - firebase database
+    // implementation 'com.google.api:api-common:2.2.1'
 
 }

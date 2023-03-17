@@ -11,6 +11,8 @@ public class User {
     private String email;
     private String password;
 
+    public User () {}
+
     // constructor for log in
     public User(String userName, String password) {
         this.userName = userName;
@@ -19,6 +21,14 @@ public class User {
 
     // constructor for registration
     public User(String userName, String email, String password) {
+        this.userName = userName;
+        this.email = email;
+        this.password = password;
+    }
+
+    // constructor for retrieving all users in firestore
+    public User(String userId, String userName, String email, String password) {
+        this.userId = userId;
         this.userName = userName;
         this.email = email;
         this.password = password;

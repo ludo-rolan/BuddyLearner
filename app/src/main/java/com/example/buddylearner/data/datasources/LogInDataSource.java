@@ -25,101 +25,46 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 public class LogInDataSource {
 
-//    public LoggingInResult<User> login(
-//            OnSuccessListener<FirebaseUser> authSuccessListener,
-//            OnFailureListener authFailureListener,
-//            OnSuccessListener<Boolean> firstConnectionSuccessListener,
-//            OnFailureListener firstConnectionFailureListener,
-//            String username,
-//            String password
-//    ) {
-//
-//        try {
-//
-//            FirebaseDataSource.getFirebaseFirestoreInstance()
-//                    .collection("users")
-//                    .document(username)
-//                    .get()
-//                    .addOnCompleteListener(task -> {
-//
-//                        if(task.isSuccessful()) {
-//
-//                            FirebaseDataSource.getFirebaseAuthInstance()
-//                                    .signInWithEmailAndPassword(task.getResult().getString("email"), password)
-//                                    .addOnSuccessListener(authTask -> {
-//                                        if (authTask.isSuccessful()) {
-//                                            // Sign in success, update UI with the signed-in user's information
-//
-//                                            // check if first connection
-//                                            authTask.addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-//                                                @Override
-//                                                public void onComplete(@NonNull Task<AuthResult> task) {
-//
-//                                                    Log.d(TAG, "signInWithEmail:success");
-//                                                    FirebaseUser currentUser = task.getResult().getUser();
-//                                                    authSuccessListener.onSuccess(currentUser);
-//
-//                                                    if (task.isSuccessful()) {
-//
-//                                                        task.addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-//                                                            @Override
-//                                                            public void onComplete(@NonNull Task<AuthResult> task) {
-//                                                                Boolean isNew = task.getResult().getAdditionalUserInfo().isNewUser();
-//                                                                Log.d("MyTAG", "onComplete: " + (isNew ? "new user" : "old user"));
-//
-//
-//                                                                Log.d("MyTAG", "firstconnection: " + isNew);
-//                                                                firstConnectionSuccessListener.onSuccess(isNew);
-//                                                            }
-//                                                        });
-//
-//
-//                                                    } else {
-//                                                        firstConnectionFailureListener.onFailure(task.getException());
-//                                                    }
-//
-//                                                }
-//                                            });
-//
-//
-////                                updateUI(currentUser);
-//                                        } else {
-//                                            // If sign in fails, display a message to the user.
-//                                            Log.w(TAG, "signInWithEmail:failure", authTask.getException());
-//                                            authFailureListener.onFailure(authTask.getException());
-//                                        }
-//                                    });
-//
-//                        } else {
-//                            Log.w(TAG, "user not found:failure", task.getException());
-//                        }
-//
-//                    });
-//
-//            // TODO: -- handle user authentication
-//            User user = new User(username, password);
-//            return new LoggingInResult.Success<>(user);
-//        } catch (Exception e) {
-//            return new LoggingInResult.Error(new IOException("Error logging in", e));
-//        }
-//    }
+    FirebaseDataSource dataSource = new FirebaseDataSource();
 
 
+    private boolean registrationSuccessful = false;
+
+    public void register(String email, String password, String userName, Consumer<Boolean> onResult) {
+        // Votre code pour enregistrer un utilisateur ici
+        registrationSuccessful = true; // Supposons que l'enregistrement a réussi
+
+        // Appeler la fonction de rappel avec le résultat de l'enregistrement
+        onResult.accept(registrationSuccessful);
+    }
+
+    public boolean isRegistrationSuccessful() {
+        return registrationSuccessful;
+    }
 
 
-    public LoggingInResult<User> login(
-            MutableLiveData<Boolean> firstConnectionSuccessListener,
-            OnFailureListener firstConnectionFailureListener,
+    public LoggingInResult<User> newLogin(
+            String email,
+            String password,
+            Boolean onResult
+    ){
+        return null;
+    }
+
+
+    public synchronized LoggingInResult<User> login(
             String username,
-            String password
+            String password,
+            Consumer<Boolean> onResult
     ) {
 
         try {
 
-            FirebaseDataSource.getFirebaseFirestoreInstance()
+            dataSource.getFirebaseFirestoreInstance()
                     .collection("users")
                     .document(username)
                     .get()
@@ -133,7 +78,7 @@ public class LogInDataSource {
 
                                     Log.d(TAG, "Document exists ! user email: " + task.getResult().getData().get("email").toString());
 
-                                    FirebaseDataSource.getFirebaseAuthInstance()
+                                    dataSource.getFirebaseAuthInstance()
                                             .signInWithEmailAndPassword(task.getResult().getData().get("email").toString(), password)
                                             .addOnSuccessListener(authResult -> {
 
@@ -142,16 +87,13 @@ public class LogInDataSource {
                                                 Boolean isNew = authResult.getAdditionalUserInfo().isNewUser();
                                                 Log.d("MyTAG", "onComplete: " + (isNew ? "new user" : "old user"));
 
-                                                Log.d("MyTAG", "firstconnection: " + isNew);
-                                                MutableLiveData<Boolean> isUserNew = new MutableLiveData<>(isNew);
-                                                firstConnectionSuccessListener.setValue(isNew);
+                                                onResult.accept(isNew);
 
-                                                Log.d(TAG, "is new user last try : " + firstConnectionSuccessListener.getValue());
                                             })
                                             .addOnFailureListener(new OnFailureListener() {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
-                                                    firstConnectionFailureListener.onFailure(e);
+                                                    Log.d(TAG, "Auth Failed: " + e.getStackTrace());
                                                 }
                                             });
 
@@ -181,16 +123,16 @@ public class LogInDataSource {
 
     public void logout() {
         // TODO: revoke authentication
-        FirebaseDataSource.getFirebaseAuthInstance().signOut();
+        dataSource.getFirebaseAuthInstance().signOut();
     }
 
 
 
 
-    public boolean isFirstConnection () {
+    public synchronized boolean isFirstConnection () {
 
-        if(FirebaseDataSource.getFirebaseAuthInstance().getCurrentUser() != null) {
-            FirebaseUserMetadata metadata =  FirebaseDataSource.getFirebaseAuthInstance().getCurrentUser().getMetadata();
+        if(dataSource.getFirebaseAuthInstance().getCurrentUser() != null) {
+            FirebaseUserMetadata metadata =  dataSource.getFirebaseAuthInstance().getCurrentUser().getMetadata();
 
             Log.d(TAG, "metadata timestamp comparison: " + metadata.getCreationTimestamp() + metadata.getLastSignInTimestamp());
 
@@ -201,8 +143,8 @@ public class LogInDataSource {
     }
 
 
-    public void allUser(OnSuccessListener<List<User>> successListener, OnFailureListener failureListener) {
-        FirebaseDataSource.getFirebaseFirestoreInstance()
+    public synchronized void allUser(OnSuccessListener<List<User>> successListener, OnFailureListener failureListener) {
+        dataSource.getFirebaseFirestoreInstance()
                 .collection("users")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
@@ -217,8 +159,8 @@ public class LogInDataSource {
     }
 
 
-    public void findUser(OnSuccessListener<User> successListener, OnFailureListener failureListener, String username) {
-        FirebaseDataSource.getFirebaseFirestoreInstance()
+    public synchronized void findUser(OnSuccessListener<User> successListener, OnFailureListener failureListener, String username) {
+        dataSource.getFirebaseFirestoreInstance()
                 .collection("users")
                 .document(username)
                 .get()
