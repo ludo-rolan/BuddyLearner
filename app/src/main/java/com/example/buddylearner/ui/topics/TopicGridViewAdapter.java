@@ -56,6 +56,7 @@ public class TopicGridViewAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
         convertView = layoutInflater.inflate(R.layout.topic_item, null);
         TextView topicNameTextView = convertView.findViewById(R.id.topic_name);
 

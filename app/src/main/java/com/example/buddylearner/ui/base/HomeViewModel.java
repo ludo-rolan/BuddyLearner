@@ -12,7 +12,6 @@ import com.example.buddylearner.R;
 import com.example.buddylearner.data.model.User;
 import com.example.buddylearner.data.repositories.HomeRepository;
 import com.example.buddylearner.data.repositories.LoggingInResult;
-import com.google.firebase.database.GenericTypeIndicator;
 
 import java.util.List;
 import java.util.regex.Matcher;
