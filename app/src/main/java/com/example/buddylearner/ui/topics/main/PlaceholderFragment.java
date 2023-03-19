@@ -156,6 +156,7 @@ public class PlaceholderFragment extends Fragment {
             });
 
 
+            // set gridview items
             topicGridViewAdapter.observe(getViewLifecycleOwner(), new Observer<TopicGridViewAdapter>() {
                 @Override
                 public void onChanged(TopicGridViewAdapter topicGridViewAdapter) {
