@@ -23,6 +23,8 @@ public class PageViewModel extends ViewModel {
     private MutableLiveData<Integer> mIndex = new MutableLiveData<>();
     private final MutableLiveData<List<TopicsCategory>> topicsCategories = new MutableLiveData<>();
     private final MutableLiveData<List<Topic>> topics = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isFollowingTopic = new MutableLiveData<>();
+    private final MutableLiveData<String> username = new MutableLiveData<>();
     private TopicsPageRepository topicsPageRepository;
 
     public PageViewModel(TopicsPageRepository topicsPageRepository){ this.topicsPageRepository = topicsPageRepository; }
@@ -41,7 +43,11 @@ public class PageViewModel extends ViewModel {
 
     public LiveData<List<TopicsCategory>> getTopicsCategories () { return topicsCategories; }
 
-    public MutableLiveData<List<Topic>> getTopics () { return topics; }
+    public LiveData<List<Topic>> getTopics () { return topics; }
+
+    public LiveData<String> getUsername () { return username; }
+
+    public LiveData<Boolean> getIsFollowingTopic () { return isFollowingTopic; }
 
     public void setIndex(int index) {
         mIndex.setValue(index);
@@ -52,6 +58,23 @@ public class PageViewModel extends ViewModel {
     }
 
     public void loadTopics() {
-        topicsPageRepository.getTopics(topics::setValue, Throwable::printStackTrace);
+        topicsPageRepository.getTopics(topics::postValue, Throwable::printStackTrace);
     }
+
+    public void loadIsFollowingTopic(String username, String topicName) {
+        topicsPageRepository.getIsFollowingTopic(isFollowingTopic::postValue, Throwable::printStackTrace, username, topicName);
+    }
+
+    public void loadUsername() {
+        topicsPageRepository.getUsername(username::postValue, Throwable::printStackTrace);
+    }
+
+    public void startFollowingTopic(String username, String topicName, String topicCategory) {
+        topicsPageRepository.startFollowingTopic(username, topicName, topicCategory);
+    }
+
+    public void stopFollowingTopic(String username, String topicName, String topicCategory) {
+        topicsPageRepository.stopFollowingTopic(username, topicName, topicCategory);
+    }
+
 }

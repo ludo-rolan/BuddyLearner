@@ -57,13 +57,15 @@ public class LogInRepository {
     public synchronized LoggingInResult<User> logIn(
             String username,
             String password,
-            Consumer<Boolean> onResult
+            OnSuccessListener<Boolean> successListener,
+            OnFailureListener failureListener
     ) {
         // handle login
         LoggingInResult<User> result = dataSource.login(
                 username,
                 password,
-                onResult
+                successListener,
+                failureListener
         );
         if (result instanceof LoggingInResult.Success) {
             setLoggedInUser(((LoggingInResult.Success<User>) result).getData());
@@ -71,17 +73,17 @@ public class LogInRepository {
         return result;
     }
 
-    public synchronized boolean getUserConnectionOccurrence () {
+    public boolean getUserConnectionOccurrence () {
 
         return dataSource.isFirstConnection();
 
     }
 
-    public synchronized void getUsers(OnSuccessListener<List<User>> successListener, OnFailureListener failureListener) {
+    public void getUsers(OnSuccessListener<List<User>> successListener, OnFailureListener failureListener) {
         dataSource.allUser(successListener, failureListener);
     }
 
-    public synchronized void getUser(OnSuccessListener<User> successListener, OnFailureListener failureListener, String username) {
+    public void getUser(OnSuccessListener<User> successListener, OnFailureListener failureListener, String username) {
         dataSource.findUser(successListener, failureListener, username);
     }
 

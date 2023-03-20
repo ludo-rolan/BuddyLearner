@@ -1,4 +1,4 @@
-package com.example.buddylearner.ui.follow;
+package com.example.buddylearner.ui.follow.topicsCategory;
 
 import static com.example.buddylearner.ui.elements.ModalBottomSheet.TAG;
 

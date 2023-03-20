@@ -173,9 +173,7 @@ public class LogInActivity extends AppCompatActivity {
 //
 //                }
 
-                //logInViewModel.getFirstConnection().observe(this, firstConnection -> {});
-
-                Log.d(TAG, "FIRST CONNECTION: I'M HERE! " + logInViewModel.getFirstConnection());
+                //logInViewModel.getIsFirstConnection().observe(this, firstConnection -> {});
 
                 // Boolean
 
@@ -183,22 +181,25 @@ public class LogInActivity extends AppCompatActivity {
 //                Log.d(TAG, "CURRENT USER: I'M HERE! " + logInViewModel.getFirebaseUser().getValue().getDisplayName());
 
                 Intent intent;
-                if(logInViewModel.getIsFirstConnection()) {
-                    intent = new Intent(LogInActivity.this, TopicsActivity.class);
-                } else {
-                    intent = new Intent(LogInActivity.this, HomeActivity.class);
-                    intent.putExtra("username", logInUsernameEditText.getText().toString());
-                }
+//                if(logInViewModel.getIsFirstConnection().getValue()) {
+//                    intent = new Intent(LogInActivity.this, TopicsActivity.class);
+//                } else {
+//                    intent = new Intent(LogInActivity.this, HomeActivity.class);
+//                    intent.putExtra("username", logInUsernameEditText.getText().toString());
+//                }
+
+                intent = new Intent(LogInActivity.this, HomeActivity.class);
+                intent.putExtra("username", logInUsernameEditText.getText().toString());
 
                 startActivity(intent);
 
-//                logInViewModel.getFirstConnection().observe(this, firstConnection -> {
+//                logInViewModel.getIsFirstConnection().observe(this, isFirstConnection -> {
 //
-//                    Log.d(TAG, "FIRST CONNECTION: " + firstConnection);
+//                    Log.d(TAG, "FIRST CONNECTION: " + isFirstConnection);
 //
 //                    // Update the UI with the retrieved items
 //                    Intent intent;
-//                    if(firstConnection) {
+//                    if(isFirstConnection) {
 //                        intent = new Intent(LogInActivity.this, TopicsActivity.class);
 //                    }
 //

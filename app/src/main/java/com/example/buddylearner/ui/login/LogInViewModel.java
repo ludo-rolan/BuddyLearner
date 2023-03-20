@@ -41,9 +41,7 @@ public class LogInViewModel extends ViewModel {
     private final MutableLiveData<List<User>> users = new MutableLiveData<>();
     private final MutableLiveData<User> user = new MutableLiveData<>();
     private final MutableLiveData<FirebaseUser> firebaseUser = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> firstConnection = new MutableLiveData<>();
-    // doesn't actually get the first connection details
-    private boolean isFirstConnection;
+    private final MutableLiveData<Boolean> isFirstConnection = new MutableLiveData<>();
 
     // strict regex
     private static final String USERNAME_PATTERN =
@@ -74,9 +72,8 @@ public class LogInViewModel extends ViewModel {
         LoggingInResult<User> result = logInRepository.logIn(
                 username,
                 password,
-                isFirstConnection -> {
-                    this.isFirstConnection = isFirstConnection;
-                }
+                isFirstConnection::setValue,
+                Throwable::printStackTrace
         );
 
         if (result instanceof LoggingInResult.Success) {
@@ -141,21 +138,8 @@ public class LogInViewModel extends ViewModel {
 
     public LiveData<FirebaseUser> getFirebaseUser() { return firebaseUser; }
 
-    public LiveData<Boolean> getFirstConnection () {
-        Log.d(TAG, "firstconnection loginviewmodel : " + firstConnection.getValue());
-        return firstConnection;
-    }
-
-    public boolean getIsFirstConnection() { return isFirstConnection; }
-
-    private boolean registrationSuccessful = false;
-
-    public void register(String email, String password, String userName, Consumer<Boolean> onResult) {
-        // Votre code pour enregistrer un utilisateur ici
-        registrationSuccessful = true; // Supposons que l'enregistrement a réussi
-
-        // Appeler la fonction de rappel avec le résultat de l'enregistrement
-        onResult.accept(registrationSuccessful);
+    public LiveData<Boolean> getIsFirstConnection () {
+        return isFirstConnection;
     }
 
 }

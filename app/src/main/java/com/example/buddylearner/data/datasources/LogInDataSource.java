@@ -32,34 +32,20 @@ public class LogInDataSource {
     FirebaseDataSource dataSource = new FirebaseDataSource();
 
 
-    private boolean registrationSuccessful = false;
-
-    public void register(String email, String password, String userName, Consumer<Boolean> onResult) {
-        // Votre code pour enregistrer un utilisateur ici
-        registrationSuccessful = true; // Supposons que l'enregistrement a réussi
-
-        // Appeler la fonction de rappel avec le résultat de l'enregistrement
-        onResult.accept(registrationSuccessful);
-    }
-
-    public boolean isRegistrationSuccessful() {
-        return registrationSuccessful;
-    }
+//    public void register(String email, String password, String userName, Consumer<Boolean> onResult) {
+//        // Votre code pour enregistrer un utilisateur ici
+//        registrationSuccessful = true; // Supposons que l'enregistrement a réussi
+//
+//        // Appeler la fonction de rappel avec le résultat de l'enregistrement
+//        onResult.accept(registrationSuccessful);
+//    }
 
 
-    public LoggingInResult<User> newLogin(
-            String email,
-            String password,
-            Boolean onResult
-    ){
-        return null;
-    }
-
-
-    public synchronized LoggingInResult<User> login(
+    public LoggingInResult<User> login(
             String username,
             String password,
-            Consumer<Boolean> onResult
+            OnSuccessListener successListener,
+            OnFailureListener failureListener
     ) {
 
         try {
@@ -86,14 +72,14 @@ public class LogInDataSource {
 
                                                 Boolean isNew = authResult.getAdditionalUserInfo().isNewUser();
                                                 Log.d("MyTAG", "onComplete: " + (isNew ? "new user" : "old user"));
-
-                                                onResult.accept(isNew);
+                                                successListener.onSuccess(isNew);
 
                                             })
                                             .addOnFailureListener(new OnFailureListener() {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
                                                     Log.d(TAG, "Auth Failed: " + e.getStackTrace());
+                                                    failureListener.onFailure(e);
                                                 }
                                             });
 

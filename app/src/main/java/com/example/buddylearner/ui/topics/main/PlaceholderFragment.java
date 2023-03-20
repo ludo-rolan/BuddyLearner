@@ -3,13 +3,13 @@ package com.example.buddylearner.ui.topics.main;
 import static android.content.ContentValues.TAG;
 
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.CompoundButton;
 import android.widget.GridView;
 import android.widget.TextView;
 
@@ -17,21 +17,18 @@ import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.buddylearner.R;
 import com.example.buddylearner.data.model.Topic;
-import com.example.buddylearner.data.model.TopicsCategory;
 import com.example.buddylearner.databinding.FragmentTopicsBinding;
 import com.example.buddylearner.ui.elements.ModalBottomSheet;
-import com.example.buddylearner.ui.follow.FollowTopicsCategoryActivity;
+import com.example.buddylearner.ui.follow.topicsCategory.FollowTopicsCategoryActivity;
 import com.example.buddylearner.ui.topics.TopicGridViewAdapter;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-import com.google.android.material.textview.MaterialTextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +49,19 @@ public class PlaceholderFragment extends Fragment {
     String [] categoriesTopics = {
             "engineering",
             "management"
+    };
+
+    private CompoundButton.OnCheckedChangeListener changeListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if (isChecked) {
+                //chipNumber = chipNumber + 1;
+            } else {
+//                    if (chipNumber > 0) {
+//                        chipNumber = chipNumber - 1;
+//                    }
+            }
+        }
     };
 
     public static PlaceholderFragment newInstance(int index) {
@@ -188,18 +198,38 @@ public class PlaceholderFragment extends Fragment {
             topicsChipGroup = binding.topicsChipGroup;
 
             pageViewModel.loadTopics();
+
             // topics chip
-            pageViewModel.getTopics().observe(getActivity(), topics -> {
-//            for(int i=0; i<topics.size(); i++) {
-//                addChip(topics.get(i).getName());
+//            List<Topic> topics;
+//            if(pageViewModel.getTopics().getValue() != null) {
+//                topics = pageViewModel.getTopics().getValue();
+//
+//                // add topic to chip
+//                for(Topic topic : topics) {
+//                    addChip(topic.getName());
+//                }
 //            }
 
-                Log.d(TAG, "topic name : " + topics.get(0).getName());
+//             topics chip
+            pageViewModel.getTopics().observe(getActivity(), topics -> {
+                for(int i=0; i<topics.size(); i++) {
+                    addChip(topics.get(i).getName());
+
+                    // Vérifier si nous avons atteint la limite de chips par ligne
+                    // regrouper les chips par 10 dans le chipgroup
+                    // it doesn't work !
+//                    if ((i+1) % 5 == 0) {
+//                        // Ajouter une nouvelle ligne de Chips
+//                        topicsChipGroup.addView(new View(getContext()), new ViewGroup.LayoutParams(0,100));
+//                    }
+                }
+
+//                Log.d(TAG, "topic name in placeholderFragment : " + topics.get(0).getName());
 
                 // add topic to chip
-                for(Topic topic : topics) {
-                    addChip(topic.getName());
-                }
+//                for(Topic topic : topics) {
+//                    addChip(topic.getName());
+//                }
             });
 
         }
@@ -221,12 +251,22 @@ public class PlaceholderFragment extends Fragment {
         binding = null;
     }
 
-    private void addChip (String text) {
+    private void addChip (String topicName) {
+
         Chip topicChip = new Chip(getContext());
+        //Chip topicChip = (Chip) LayoutInflater.from(getContext()).inflate(R.layout.chip_item, null);
         topicChip.setId(View.generateViewId());
-        topicChip.setText(text);
-        topicChip.setCloseIconVisible(true);
+        topicChip.setText(topicName);
+        // topicChip.setCloseIconVisible(true);
+        topicChip.setCheckedIconVisible(true);
+        topicChip.setCheckedIconResource(R.drawable.baseline_add_24);
         topicChip.setChipIconResource(R.drawable.baseline_person_24);
+        topicChip.setClickable(true);
+        //topicChip.setCheckable(true);
+
+        topicChip.setOnCheckedChangeListener(changeListener);
+
+        topicsChipGroup.addView(topicChip);
 
 //        topicChip.setOnClickListener(view -> {
 //
@@ -239,13 +279,153 @@ public class PlaceholderFragment extends Fragment {
 //
 //        });
 
-        topicChip.setOnCloseIconClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                topicsChipGroup.removeView(topicChip);
+//        topicChip.setOnCloseIconClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                topicsChipGroup.removeView(topicChip);
+//            }
+//        });
+
+
+//        pageViewModel.loadUsername();
+//
+//        // get the username
+//        pageViewModel.getUsername().observe(getActivity(), username -> {
+//
+//            pageViewModel.loadIsFollowingTopic(username, topicName);
+//
+//            // get is topic is already followed
+//            pageViewModel.getIsFollowingTopic().observe(getActivity(), isFollowingTopic -> {
+//
+//                if(isFollowingTopic) {
+//                    //TODO: chip button icon on following topic
+//                    topicChip.setCheckedIconVisible(true);
+//                    topicChip.setBackgroundColor(getResources().getColor(R.color.purple_500));
+//                } else {
+//                    //TODO: chip button icon on unfollowing topic
+//                    topicChip.setCheckedIconVisible(true);
+//                    topicChip.setCheckedIconResource(R.drawable.baseline_add_24);
+//                }
+//
+//            });
+//
+//        });
+
+
+        // already loaded on top
+        //pageViewModel.loadTopics();
+        pageViewModel.loadUsername();
+
+        topicChip.setOnClickListener(view -> {
+
+            List<Topic> topicsList;
+            Topic topicValue = null;
+
+            if(pageViewModel.getTopics().getValue() != null) {
+                topicsList = pageViewModel.getTopics().getValue();
+
+                for(Topic topic : topicsList) {
+                    if(topic.getName().equalsIgnoreCase(topicName)) {
+                        topicValue = topic;
+                    }
+                }
+
             }
+
+            if(topicValue != null) {
+                Log.d(TAG, "topic name clicked on : " + topicValue.getName());
+            }
+
+            String usernameValue = null;
+            if(pageViewModel.getUsername().getValue() != null) {
+                usernameValue = pageViewModel.getUsername().getValue();
+            }
+
+            if(usernameValue != null) {
+                Log.d(TAG, "username value : " + usernameValue);
+            }
+
+            pageViewModel.loadIsFollowingTopic(usernameValue, topicValue.getName());
+
+            boolean isFollowingTopic = false;
+            if(pageViewModel.getIsFollowingTopic().getValue() != null) {
+                isFollowingTopic = pageViewModel.getIsFollowingTopic().getValue();
+            }
+
+            if(isFollowingTopic) {
+                Log.d(TAG, "topic is already followed : " + true);
+            }
+            else {
+                Log.d(TAG, "topic is already followed : " + false);
+            }
+
+            if(isFollowingTopic) {
+                pageViewModel.stopFollowingTopic(usernameValue, topicValue.getName(), topicValue.getTopicCategory());
+                //TODO: change the chip button state on stop following topic
+                topicChip.setCheckedIconVisible(true);
+                topicChip.setCheckedIconResource(R.drawable.baseline_add_24);
+            } else {
+                pageViewModel.startFollowingTopic(usernameValue, topicValue.getName(), topicValue.getTopicCategory());
+                //TODO: change the chip button state on start following topic
+                topicChip.setCheckedIconVisible(true);
+                topicChip.setBackgroundColor(getResources().getColor(R.color.purple_500));
+            }
+
+
+            // find topic element
+            // topicsList.indexOf();
+
+            // get the selected topic category
+//            pageViewModel.getTopics().observe(getActivity(), topics -> {
+//
+//               String topicCategory = null;
+//
+//                for(Topic topic : topics) {
+//                    if(topic.getName().equalsIgnoreCase(topicName)) {
+//                        topicCategory = topic.getTopicCategory();
+//                        break;
+//                    }
+//                }
+//
+//                Log.d(TAG, "I clicked on topic category : " + topicCategory);
+//
+//                final String finalTopicCategory = topicCategory;
+//
+//                pageViewModel.loadUsername();
+//
+//                String usernameValue;
+//                if(pageViewModel.getUsername().getValue() != null) {
+//                    usernameValue = pageViewModel.getUsername().getValue();
+//                    Log.d(TAG, "username value : " + usernameValue);
+//                }
+//
+//                // get the username
+//                pageViewModel.getUsername().observe(getActivity(), username -> {
+//
+//                    pageViewModel.loadIsFollowingTopic(username, topicName);
+//
+//                    // get is topic is already followed
+//                    pageViewModel.getIsFollowingTopic().observe(getActivity(), isFollowingTopic -> {
+//
+//                        if(isFollowingTopic) {
+//                            pageViewModel.stopFollowingTopic(username, topicName, finalTopicCategory);
+//                            //TODO: change the chip button state on stop following topic
+//                            topicChip.setCheckedIconVisible(true);
+//                            topicChip.setCheckedIconResource(R.drawable.baseline_add_24);
+//                        } else {
+//                            pageViewModel.startFollowingTopic(username, topicName, finalTopicCategory);
+//                            //TODO: change the chip button state on start following topic
+//                            topicChip.setCheckedIconVisible(true);
+//                            topicChip.setBackgroundColor(getResources().getColor(R.color.purple_500));
+//                        }
+//
+//                    });
+//
+//                });
+//
+//            });
+
         });
 
-        topicsChipGroup.addView(topicChip);
     }
 }

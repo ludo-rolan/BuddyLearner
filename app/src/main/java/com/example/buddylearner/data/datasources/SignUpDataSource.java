@@ -59,7 +59,7 @@ public class SignUpDataSource {
 
             // Add new user to FirebaseAuth
             dataSource.getFirebaseAuthInstance()
-                    .signInWithEmailAndPassword(email, password)
+                    .createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
@@ -68,6 +68,27 @@ public class SignUpDataSource {
                                 Log.d(TAG, "createUserWithEmail:success");
 //                                FirebaseUser currentUser = FirebaseDataSource.getFirebaseAuthInstance().getCurrentUser();
 //                                updateUI(user);
+
+
+                                // modifier le nom d'utilisateur firebase auth
+                                FirebaseUser user = dataSource.getFirebaseAuthInstance().getCurrentUser();
+
+                                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                        .setDisplayName(username)
+                                        .build();
+
+                                user.updateProfile(profileUpdates)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    Log.d(TAG, "Le nom d'utilisateur a été modifié avec succès !");
+                                                } else {
+                                                    Log.e(TAG, "Échec lors de la modification du nom d'utilisateur :", task.getException());
+                                                }
+                                            }
+                                        });
+
 
 
                             } else {
@@ -79,30 +100,6 @@ public class SignUpDataSource {
                             }
                         }
                     });
-
-
-
-            // modifier le nom d'utilisateur firebase auth
-            FirebaseUser user = dataSource.getFirebaseAuthInstance().getCurrentUser();
-
-            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                    .setDisplayName(username)
-                    .build();
-
-            user.updateProfile(profileUpdates)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Log.d(TAG, "Le nom d'utilisateur a été modifié avec succès !");
-                            } else {
-                                Log.e(TAG, "Une erreur s'est produite lors de la modification du nom d'utilisateur :", task.getException());
-                            }
-                        }
-                    });
-
-
-
 
 
             // Add Uid to firebase firestore user document

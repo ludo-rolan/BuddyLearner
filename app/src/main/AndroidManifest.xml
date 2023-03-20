@@ -12,7 +12,7 @@
         android:theme="@style/Theme.BuddyLearner"
         tools:targetApi="31">
         <activity
-            android:name=".ui.follow.FollowTopicsCategoryActivity"
+            android:name=".ui.follow.topicsCategory.FollowTopicsCategoryActivity"
             android:exported="true" />
         <activity
             android:name=".ui.topics.TopicsActivity"
