@@ -102,13 +102,14 @@ public class HomeActivity extends AppCompatActivity {
         // already done before
         //logInViewModel = new ViewModelProvider(this).get(LogInViewModel.class);
 
-        homeViewModel.loadUsers();
-        homeViewModel.getUsers().observe(this, users -> {
-            Log.d(TAG, "liste des utilisateurs : " + users.get(0).getUserName());
-            for (User user: users) {
-                Log.d(TAG, "username : " + user.getUserName());
-            }
-        });
+        // it works !
+//        homeViewModel.loadUsers();
+//        homeViewModel.getUsers().observe(this, users -> {
+//            Log.d(TAG, "liste des utilisateurs : " + users.get(0).getUserName());
+//            for (User user: users) {
+//                Log.d(TAG, "username : " + user.getUserName());
+//            }
+//        });
 
         homeViewModel.loadUser(getIntent().getStringExtra("username"));
         //homeViewModel.loadUser(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());

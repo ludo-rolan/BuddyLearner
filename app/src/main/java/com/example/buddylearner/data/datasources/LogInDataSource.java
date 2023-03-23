@@ -8,6 +8,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.buddylearner.data.enums.UserRole;
 import com.example.buddylearner.data.model.User;
 import com.example.buddylearner.data.repositories.LoggingInResult;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -151,7 +152,12 @@ public class LogInDataSource {
                 .document(username)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
-                    User user = new User(documentSnapshot.getString("userName"), documentSnapshot.getString("email"), documentSnapshot.getString("password"));
+                    User user = new User(
+                            documentSnapshot.getString("userName"),
+                            documentSnapshot.getString("email"),
+                            documentSnapshot.getString("password"),
+                            documentSnapshot.getString("role").equalsIgnoreCase(UserRole.learner.name()) ? UserRole.learner : UserRole.tutor
+                    );
 
                     successListener.onSuccess(user);
                 })

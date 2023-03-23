@@ -8,12 +8,17 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -21,15 +26,27 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.buddylearner.R;
+import com.example.buddylearner.data.enums.UserRole;
 import com.example.buddylearner.databinding.ActivitySignUpBinding;
 import com.example.buddylearner.ui.login.LogInActivity;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class SignUpActivity extends AppCompatActivity {
 
 //    la classe binding générée pour le fichier activity_sign_in.xml est ActivitySignInBinding
     private ActivitySignUpBinding activitySignUpBinding;
     private SignUpViewModel signUpViewModel;
+    EditText signUpUsernameEditText;
+    EditText signUpEmailEditText;
+    EditText signUpPasswordEditText;
+    Button signUpButton;
+    AutoCompleteTextView signUpUserRoleAutocomplete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +63,74 @@ public class SignUpActivity extends AppCompatActivity {
         signUpViewModel = new ViewModelProvider(this, new SignUpViewModelFactory())
                 .get(SignUpViewModel.class);
 
-        final EditText signUpUsernameEditText = activitySignUpBinding.signUpUsernameEditText;
-        final EditText signUpEmailEditText = activitySignUpBinding.signUpEmailEditText;
-        final EditText signUpPasswordEditText = activitySignUpBinding.signUpPasswordEditText;
-        final Button signUpButton = activitySignUpBinding.signUpButton;
+        signUpUsernameEditText = activitySignUpBinding.signUpUsernameEditText;
+        signUpEmailEditText = activitySignUpBinding.signUpEmailEditText;
+        signUpPasswordEditText = activitySignUpBinding.signUpPasswordEditText;
+        signUpButton = activitySignUpBinding.signUpButton;
+        signUpUserRoleAutocomplete = activitySignUpBinding.signUpUserRoleAutocomplete;
+
+        UserRole userRole;
+
+        List menuOptions = new ArrayList<String>(){
+            {
+                add("learner");
+                add("tutor");
+            }
+        };
+
+
+        // create a ArrayList String type
+        // and Initialize an ArrayList with asList()
+        // it work !
+//        ArrayList<String> gfg = new ArrayList<String>(
+//                Arrays.asList("Geeks",
+//                        "for",
+//                        "Geeks"));
+
+
+        // create a ArrayList String type
+        // and Initialize an ArrayList with List.of()
+        // require min java 9
+//        List<String> gfg = new ArrayList<>(
+//                List.of("Geeks",
+//                        "for",
+//                        "Geeks"));
+
+
+        // create a stream of elements using Stream.of()
+        // method collect the stream elements into an
+        // ArrayList using the collect() method and
+        // Collectors.toCollection() method
+        // require api minsdk 24
+//        ArrayList<String> list
+//                = Stream.of("Geeks", "For", "Geeks")
+//                .collect(Collectors.toCollection(
+//                        ArrayList::new));
+
+
+
+        ArrayAdapter adapter = new ArrayAdapter(getBaseContext(), R.layout.role_item, menuOptions);
+        signUpUserRoleAutocomplete.setAdapter(adapter);
+
+
+//        // récupérer l'élément "exposed dropdown menu"
+//        MaterialAutoCompleteTextView exposedDropdownMenu = findViewById(R.id.exposed_dropdown_menu);
+//
+//        // récupérer les éléments du menu
+//                String[] items = getResources().getStringArray(R.array.dropdown_items);
+//
+//        // sélectionner l'élément à afficher
+//                String selectedItem = "Élément à sélectionner";
+//
+//        // trouver l'index de l'élément à afficher dans la liste
+//                int selectedIndex = Arrays.asList(items).indexOf(selectedItem);
+//
+//        // sélectionner l'élément dans le menu
+//                exposedDropdownMenu.setSelectedItem(selectedIndex);
+
+
+
+
 //        final ProgressBar loadingProgressBar = activitySignUpBinding.loading;
 
         signUpViewModel.getSignUpUiState().observe(this, new Observer<SignUpUiState>() {
@@ -116,8 +197,14 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    signUpViewModel.signUp(signUpUsernameEditText.getText().toString(),
-                            signUpEmailEditText.getText().toString(), signUpPasswordEditText.getText().toString());
+                    UserRole role = signUpUserRoleAutocomplete.getText().toString().equalsIgnoreCase(UserRole.learner.name()) ? UserRole.learner : UserRole.tutor;
+
+                    signUpViewModel.signUp(
+                            signUpUsernameEditText.getText().toString(),
+                            signUpEmailEditText.getText().toString(),
+                            signUpPasswordEditText.getText().toString(),
+                            role
+                    );
                 }
                 return false;
             }
@@ -126,9 +213,15 @@ public class SignUpActivity extends AppCompatActivity {
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UserRole role = signUpUserRoleAutocomplete.getText().toString().equalsIgnoreCase(UserRole.learner.name()) ? UserRole.learner : UserRole.tutor;
+
 //                loadingProgressBar.setVisibility(View.VISIBLE);
-                signUpViewModel.signUp(signUpUsernameEditText.getText().toString(),
-                        signUpEmailEditText.getText().toString(), signUpPasswordEditText.getText().toString());
+                signUpViewModel.signUp(
+                        signUpUsernameEditText.getText().toString(),
+                        signUpEmailEditText.getText().toString(),
+                        signUpPasswordEditText.getText().toString(),
+                        role
+                );
 
                 //TODO: implement logic for signed up user verification to change activity
                 Intent logInActivity = new Intent(SignUpActivity.this, LogInActivity.class);
@@ -154,6 +247,14 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void showSignUpFailed(@StringRes Integer errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
+    }
+
+    public void showDropdown(ArrayAdapter<String> adapter, int position) {
+        if(!TextUtils.isEmpty(this.getText(position).toString())) {
+            if(adapter != null) {
+                adapter.getFilter().filter(null);
+            }
+        }
     }
 
 }

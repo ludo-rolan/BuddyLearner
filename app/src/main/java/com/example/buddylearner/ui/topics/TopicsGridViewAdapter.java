@@ -1,26 +1,19 @@
 package com.example.buddylearner.ui.topics;
 
-import static android.content.ContentValues.TAG;
-
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-
 import com.example.buddylearner.R;
 import com.example.buddylearner.data.model.TopicsCategory;
 import com.example.buddylearner.databinding.FragmentTopicsBinding;
 
 import java.util.List;
-import java.util.Objects;
 
-public class TopicGridViewAdapter extends BaseAdapter {
+public class TopicsGridViewAdapter extends BaseAdapter {
 
     Context context;
     List<TopicsCategory> topicsCategories;
@@ -28,7 +21,7 @@ public class TopicGridViewAdapter extends BaseAdapter {
     LayoutInflater layoutInflater;
     private FragmentTopicsBinding binding;
 
-    public TopicGridViewAdapter(
+    public TopicsGridViewAdapter(
             Context applicationContext,
             List<TopicsCategory> topicsCategories
     ) {

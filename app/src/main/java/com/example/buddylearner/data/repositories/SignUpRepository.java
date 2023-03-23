@@ -2,6 +2,7 @@ package com.example.buddylearner.data.repositories;
 
 import com.example.buddylearner.data.datasources.LogInDataSource;
 import com.example.buddylearner.data.datasources.SignUpDataSource;
+import com.example.buddylearner.data.enums.UserRole;
 import com.example.buddylearner.data.model.User;
 import com.example.buddylearner.ui.signup.SignUpResult;
 
@@ -42,9 +43,10 @@ public class SignUpRepository {
         // @see https://developer.android.com/training/articles/keystore
     }
 
-    public SigningUpResult<User> signUp(String username, String email, String password) {
+    public SigningUpResult<User> signUp(String username, String email, String password, UserRole role) {
         // handle signing up
-        SigningUpResult<User> result = dataSource.signUp(username, email, password);
+        SigningUpResult<User> result = dataSource.signUp(username, email, password, role);
+
         if (result instanceof SigningUpResult.Success) {
             setLoggedInUser(((SigningUpResult.Success<User>) result).getData());
         }

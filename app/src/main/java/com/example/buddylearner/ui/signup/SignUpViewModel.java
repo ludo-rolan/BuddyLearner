@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.buddylearner.R;
+import com.example.buddylearner.data.enums.UserRole;
 import com.example.buddylearner.data.model.User;
 import com.example.buddylearner.data.repositories.SignUpRepository;
 import com.example.buddylearner.data.repositories.SigningUpResult;
@@ -44,9 +45,9 @@ public class SignUpViewModel extends ViewModel {
         return signUpResult;
     }
 
-    public void signUp(String username, String email, String password) {
+    public void signUp(String username, String email, String password, UserRole role) {
         // can be launched in a separate asynchronous job
-        SigningUpResult<User> result = signUpRepository.signUp(username, email, password);
+        SigningUpResult<User> result = signUpRepository.signUp(username, email, password, role);
 
         if (result instanceof SigningUpResult.Success) {
             User data = ((SigningUpResult.Success<User>) result).getData();

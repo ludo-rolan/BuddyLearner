@@ -4,6 +4,7 @@ import static android.content.ContentValues.TAG;
 
 import android.util.Log;
 
+import com.example.buddylearner.data.enums.UserRole;
 import com.example.buddylearner.data.model.User;
 import com.example.buddylearner.data.repositories.HomeResult;
 import com.example.buddylearner.data.repositories.LoggingInResult;
@@ -56,7 +57,12 @@ public class HomeDataSource {
                 .document(username)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
-                    User user = new User(documentSnapshot.getString("userName"), documentSnapshot.getString("email"), documentSnapshot.getString("password"));
+                    User user = new User(
+                            documentSnapshot.getString("userName"),
+                            documentSnapshot.getString("email"),
+                            documentSnapshot.getString("password"),
+                            documentSnapshot.getString("role").equalsIgnoreCase(UserRole.learner.name()) ? UserRole.learner : UserRole.tutor
+                    );
 
                     Log.d(TAG, "HomeDataSource current username: " + user.getUserName());
 

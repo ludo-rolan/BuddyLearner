@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -20,13 +21,17 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.buddylearner.R;
 import com.example.buddylearner.data.model.Topic;
+import com.example.buddylearner.databinding.FragmentFollowedTopicsBinding;
 import com.example.buddylearner.databinding.FragmentTopicsBinding;
 import com.example.buddylearner.ui.elements.ModalBottomSheet;
 import com.example.buddylearner.ui.follow.topicsCategory.FollowTopicsCategoryActivity;
-import com.example.buddylearner.ui.topics.TopicGridViewAdapter;
+import com.example.buddylearner.ui.topics.FollowedTopicsListViewAdapter;
+import com.example.buddylearner.ui.topics.TopicsGridViewAdapter;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
@@ -42,9 +47,11 @@ public class PlaceholderFragment extends Fragment {
     private String topicCategory;
 
     private PageViewModel pageViewModel;
-    private FragmentTopicsBinding binding;
+    private FragmentTopicsBinding fragmentTopicsBinding;
+    private FragmentFollowedTopicsBinding fragmentFollowedTopicsBinding;
     private GridView gridView;
     private ChipGroup topicsChipGroup;
+    private RecyclerView recyclerView;
 
     String [] categoriesTopics = {
             "engineering",
@@ -87,7 +94,7 @@ public class PlaceholderFragment extends Fragment {
 
         // topics added to view
 
-        //binding = FragmentTopicsBinding.inflate(getLayoutInflater());
+        //fragmentTopicsBinding = FragmentTopicsBinding.inflate(getLayoutInflater());
 
     }
 
@@ -98,28 +105,150 @@ public class PlaceholderFragment extends Fragment {
             Bundle savedInstanceState
     ) {
 
-        // attach to parent = false
-        binding = FragmentTopicsBinding.inflate(inflater, container, true);
-        View root = binding.getRoot();
+        // displayed fragment to update with data
+        View root = null;
 
-        final TextView textView = binding.sectionLabel;
-
-        pageViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
-
-
+        // fetch topicsCategories and topics
         pageViewModel.loadTopicsCategory();
+        pageViewModel.loadTopics();
 
-        gridView = binding.topicsGridview;
 
-        MutableLiveData<TopicGridViewAdapter> topicGridViewAdapter = new MutableLiveData<>();
+
+        MutableLiveData<FollowedTopicsListViewAdapter> followedTopicsListViewAdapter = new MutableLiveData<>();
+
+        // display in the first tab
+        if(getArguments() != null && getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
+
+            //TODO: Display followed topics in the first tab of the topics activity
+
+            // attach to parent = false
+            fragmentFollowedTopicsBinding = FragmentFollowedTopicsBinding.inflate(inflater, container, true);
+            root = fragmentFollowedTopicsBinding.getRoot();
+
+            final TextView followedTopicsTitle = fragmentFollowedTopicsBinding.followedTopicsTitle;
+
+            pageViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+                @Override
+                public void onChanged(@Nullable String s) {
+                    followedTopicsTitle.setText(s);
+                }
+            });
+
+
+            //TODO: Handle null object reference on recyclerView
+
+            // get the recyclerView
+            recyclerView = fragmentFollowedTopicsBinding.followedTopicsList;
+
+
+            //TODO: Populate the recyclerView
+            pageViewModel.getTopics().observe(getViewLifecycleOwner(), topics -> {
+
+                followedTopicsListViewAdapter.setValue(new FollowedTopicsListViewAdapter(getContext(), topics));
+
+            });
+
+
+
+
+
+
+
+//            // Lookup the recyclerview in activity layout
+//            RecyclerView rvContacts = (RecyclerView) findViewById(R.id.rvContacts);
+//
+//            // Initialize contacts
+//            contacts = Contact.createContactsList(20);
+//            // Create adapter passing in the sample user data
+//            ContactsAdapter adapter = new ContactsAdapter(contacts);
+//            // Attach the adapter to the recyclerview to populate items
+//            rvContacts.setAdapter(adapter);
+//            // Set layout manager to position the items
+//            rvContacts.setLayoutManager(new LinearLayoutManager(this));
+//            // That's all!
+
+
+
+
+
+
+
+
+
+            // set recyclerView item click listener
+//            recyclerView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                @Override
+//                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//
+//                }
+//            });
+
+
+
+
+            // set recyclerView items
+            followedTopicsListViewAdapter.observe(getViewLifecycleOwner(), new Observer<FollowedTopicsListViewAdapter>() {
+                @Override
+                public void onChanged(FollowedTopicsListViewAdapter followedTopicsListViewAdapter) {
+
+                    recyclerView.setAdapter(followedTopicsListViewAdapter);
+                    // Set layout manager to position the items - important
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+                }
+
+//                @Override
+//                public void onChanged(TopicsGridViewAdapter topicGridViewAdapter) {
+//
+//                    for(int i=0; i<topicGridViewAdapter.getCount(); i++) {
+//
+//                        CardView cardView = (CardView) topicGridViewAdapter.getView(i,null, fragmentTopicsBinding.topicsGridview);
+//                        cardView.setId(View.generateViewId());
+//                        cardView.setOnClickListener(view -> {
+//
+//                            //TODO: open bottomsheet when click on the card view
+//                            ModalBottomSheet modalBottomSheet = new ModalBottomSheet();
+//                            modalBottomSheet.show(getParentFragmentManager(), ModalBottomSheet.TAG);
+//
+//                        });
+//
+//                    }
+//
+//
+//                    gridView.setAdapter(topicGridViewAdapter);
+//                }
+
+            });
+
+        }
+
+
+
+        MutableLiveData<TopicsGridViewAdapter> topicGridViewAdapter = new MutableLiveData<>();
 
         // display in the second tab
         if(getArguments() != null && getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
+
+
+            // attach to parent = false
+            fragmentTopicsBinding = FragmentTopicsBinding.inflate(inflater, container, true);
+            root = fragmentTopicsBinding.getRoot();
+
+            final TextView textView = fragmentTopicsBinding.sectionLabel;
+
+            pageViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+                @Override
+                public void onChanged(@Nullable String s) {
+                    textView.setText(s);
+                }
+            });
+
+            // already done on top
+            //pageViewModel.loadTopicsCategory();
+
+            // get the gridview
+            gridView = fragmentTopicsBinding.topicsGridview;
+
 
 //        if(pageViewModel.getTopicsCategories() != null)
 //            Log.d(TAG, "first topic category: " + pageViewModel.getTopicsCategories().get(0));
@@ -131,10 +260,10 @@ public class PlaceholderFragment extends Fragment {
 //                        topicsCategories
 //                );
 
-                topicGridViewAdapter.setValue(new TopicGridViewAdapter(getContext(), topicsCategories));
+                topicGridViewAdapter.setValue(new TopicsGridViewAdapter(getContext(), topicsCategories));
 
 //                for (int i=0; i<topicsCategories.size(); i++) {
-//                    Log.d(TAG, "card name : " + ((TextView) topicGridViewAdapter.getView(i, null, binding.topicsGridview).findViewById(R.id.topic_name)).getText());
+//                    Log.d(TAG, "card name : " + ((TextView) topicGridViewAdapter.getView(i, null, fragmentTopicsBinding.topicsGridview).findViewById(R.id.topic_name)).getText());
 //                }
 
             });
@@ -167,13 +296,13 @@ public class PlaceholderFragment extends Fragment {
 
 
             // set gridview items
-            topicGridViewAdapter.observe(getViewLifecycleOwner(), new Observer<TopicGridViewAdapter>() {
+            topicGridViewAdapter.observe(getViewLifecycleOwner(), new Observer<TopicsGridViewAdapter>() {
                 @Override
-                public void onChanged(TopicGridViewAdapter topicGridViewAdapter) {
+                public void onChanged(TopicsGridViewAdapter topicGridViewAdapter) {
 
                     for(int i=0; i<topicGridViewAdapter.getCount(); i++) {
 
-                        CardView cardView = (CardView) topicGridViewAdapter.getView(i,null, binding.topicsGridview);
+                        CardView cardView = (CardView) topicGridViewAdapter.getView(i,null, fragmentTopicsBinding.topicsGridview);
                         cardView.setId(View.generateViewId());
                         cardView.setOnClickListener(view -> {
 
@@ -191,13 +320,14 @@ public class PlaceholderFragment extends Fragment {
             });
 
 
-            //Log.d(TAG, "card name : " + ((TextView) topicGridViewAdapter.getView(i, null, binding.topicsGridview).findViewById(R.id.topic_name)).getText());
+            //Log.d(TAG, "card name : " + ((TextView) topicGridViewAdapter.getView(i, null, fragmentTopicsBinding.topicsGridview).findViewById(R.id.topic_name)).getText());
 
 
             // add topics to fragment
-            topicsChipGroup = binding.topicsChipGroup;
+            topicsChipGroup = fragmentTopicsBinding.topicsChipGroup;
 
-            pageViewModel.loadTopics();
+            // already done on top
+            //pageViewModel.loadTopics();
 
             // topics chip
 //            List<Topic> topics;
@@ -248,7 +378,8 @@ public class PlaceholderFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
+        fragmentTopicsBinding = null;
+        fragmentFollowedTopicsBinding = null;
     }
 
     private void addChip (String topicName) {

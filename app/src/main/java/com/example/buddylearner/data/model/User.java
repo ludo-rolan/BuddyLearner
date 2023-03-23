@@ -2,6 +2,8 @@ package com.example.buddylearner.data.model;
 
 import androidx.annotation.Nullable;
 
+import com.example.buddylearner.data.enums.UserRole;
+
 public class User {
 
     @Nullable
@@ -10,6 +12,7 @@ public class User {
     @Nullable
     private String email;
     private String password;
+    private String role;
 
     public User () {}
 
@@ -20,10 +23,11 @@ public class User {
     }
 
     // constructor for registration
-    public User(String userName, String email, String password) {
+    public User(String userName, String email, String password, UserRole role) {
         this.userName = userName;
         this.email = email;
         this.password = password;
+        this.role = String.valueOf(role.learner);
     }
 
     // constructor for retrieving all users in firestore
@@ -42,10 +46,24 @@ public class User {
         return userName;
     }
 
+    public void setUserName() {
+        this.userName = userName;
+    }
+
     public String getEmail() {
         return email;
     }
 
+    public void setEmail() {
+        this.email = email;
+    }
+
     public String getPassword() { return password; }
+
+    public void setPassword() { this.password = password; }
+
+    public String getRole() { return role; }
+
+    public void setRole() { this.role = role; }
 
 }

@@ -40,12 +40,13 @@
     <string name="drawer_open">drawer open</string>
     <string name="drawer_close">drawer close</string>
     <string name="title_activity_topics">TopicsActivity</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
+    <string name="tab_text_1">Following</string>
+    <string name="tab_text_2">Suggestions</string>
     <string name="first_tab_description">first tab</string>
     <string name="topics_view_pager_description">description du view pager</string>
     <string name="topics_floating_button_description">un bouton flottant</string>
     <string name="menu_profile">Profile</string>
     <string name="menu_logout">Logout</string>
     <string name="menu_topics">Topics</string>
+    <string name="user_role_text_field">choose your role</string>
 </resources>

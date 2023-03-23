@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="learner">learner</string>
+    <string name="tutor">tutor</string>
+    <string-array name="role_items">
+        <item>@string/learner</item>
+        <item>@string/tutor</item>
+    </string-array>
+</resources>

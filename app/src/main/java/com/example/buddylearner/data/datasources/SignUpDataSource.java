@@ -6,6 +6,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.buddylearner.data.enums.UserRole;
 import com.example.buddylearner.data.model.User;
 import com.example.buddylearner.data.repositories.LoggingInResult;
 import com.example.buddylearner.data.repositories.SigningUpResult;
@@ -27,15 +28,19 @@ public class SignUpDataSource {
 
     FirebaseDataSource dataSource = new FirebaseDataSource();
 
-    public SigningUpResult<User> signUp(String username, String email, String password) {
+    public SigningUpResult<User> signUp(String username, String email, String password, UserRole role) {
 
         try {
             // TODO: handle User registration
             User signUpUser = new User(
                 username,
                 email,
-                password
+                password,
+                role
             );
+
+
+            Log.d(TAG, "user role : " + role.name());
 
 
             // Add a new document with declared id
@@ -69,9 +74,8 @@ public class SignUpDataSource {
 //                                FirebaseUser currentUser = FirebaseDataSource.getFirebaseAuthInstance().getCurrentUser();
 //                                updateUI(user);
 
-
                                 // modifier le nom d'utilisateur firebase auth
-                                FirebaseUser user = dataSource.getFirebaseAuthInstance().getCurrentUser();
+                                FirebaseUser user = task.getResult().getUser();
 
                                 UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                         .setDisplayName(username)
@@ -89,6 +93,23 @@ public class SignUpDataSource {
                                             }
                                         });
 
+                                // Add Uid to firebase firestore user document
+                                dataSource.getFirebaseFirestoreInstance()
+                                        .collection("users")
+                                        .document(username)
+                                        .update("userId", task.getResult().getUser().getUid())
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Log.d(TAG, "DocumentSnapshot successfully updated!");
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w(TAG, "Error updating document", e);
+                                            }
+                                        });
 
 
                             } else {
@@ -98,25 +119,6 @@ public class SignUpDataSource {
 //                                        Toast.LENGTH_SHORT).show();
 //                                updateUI(null);
                             }
-                        }
-                    });
-
-
-            // Add Uid to firebase firestore user document
-            dataSource.getFirebaseFirestoreInstance()
-                    .collection("users")
-                    .document(username)
-                    .update("userId", dataSource.getFirebaseAuthInstance().getCurrentUser().getUid())
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d(TAG, "DocumentSnapshot successfully updated!");
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w(TAG, "Error updating document", e);
                         }
                     });
 
