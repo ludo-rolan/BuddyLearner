@@ -58,9 +58,10 @@ public class HomeDataSource {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     User user = new User(
+                            documentSnapshot.getString("userId"),
                             documentSnapshot.getString("userName"),
                             documentSnapshot.getString("email"),
-                            documentSnapshot.getString("password"),
+//                            documentSnapshot.getString("password"),
                             documentSnapshot.getString("role").equalsIgnoreCase(UserRole.learner.name()) ? UserRole.learner : UserRole.tutor
                     );
 

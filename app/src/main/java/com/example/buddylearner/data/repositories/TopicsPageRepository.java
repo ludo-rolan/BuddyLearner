@@ -43,16 +43,16 @@ public class TopicsPageRepository {
         dataSource.isFollowingTopic(successListener, failureListener, username, topicName);
     }
 
-    public void startFollowingTopic(String username, String topicName, String topicCategory) {
-        dataSource.startFollowingTopic(username, topicName, topicCategory);
+    public void startFollowingTopic(User user, String topicName, String topicCategory) {
+        dataSource.startFollowingTopic(user, topicName, topicCategory);
     }
 
-    public void stopFollowingTopic(String username, String topicName, String topicCategory) {
-        dataSource.stopFollowingTopic(username, topicName, topicCategory);
+    public void stopFollowingTopic(User user, String topicName, String topicCategory) {
+        dataSource.stopFollowingTopic(user, topicName, topicCategory);
     }
 
-    public void getUsername(OnSuccessListener<String> successListener, OnFailureListener failureListener) {
-        dataSource.getUsername(successListener, failureListener);
+    public void getUser(OnSuccessListener<User> successListener, OnFailureListener failureListener) {
+        dataSource.getUser(successListener, failureListener);
     }
 
 }

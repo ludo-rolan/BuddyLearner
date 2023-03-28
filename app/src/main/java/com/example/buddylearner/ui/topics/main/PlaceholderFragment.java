@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.buddylearner.R;
 import com.example.buddylearner.data.model.Topic;
+import com.example.buddylearner.data.model.User;
 import com.example.buddylearner.databinding.FragmentFollowedTopicsBinding;
 import com.example.buddylearner.databinding.FragmentTopicsBinding;
 import com.example.buddylearner.ui.elements.ModalBottomSheet;
@@ -445,7 +446,7 @@ public class PlaceholderFragment extends Fragment {
 
         // already loaded on top
         //pageViewModel.loadTopics();
-        pageViewModel.loadUsername();
+        pageViewModel.loadUser();
 
         topicChip.setOnClickListener(view -> {
 
@@ -467,16 +468,16 @@ public class PlaceholderFragment extends Fragment {
                 Log.d(TAG, "topic name clicked on : " + topicValue.getName());
             }
 
-            String usernameValue = null;
-            if(pageViewModel.getUsername().getValue() != null) {
-                usernameValue = pageViewModel.getUsername().getValue();
+            User user = null;
+            if(pageViewModel.getUser().getValue() != null) {
+                user = pageViewModel.getUser().getValue();
             }
 
-            if(usernameValue != null) {
-                Log.d(TAG, "username value : " + usernameValue);
+            if(user != null) {
+                Log.d(TAG, "username value : " + user.getUserName());
             }
 
-            pageViewModel.loadIsFollowingTopic(usernameValue, topicValue.getName());
+            pageViewModel.loadIsFollowingTopic(user.getUserName(), topicValue.getName());
 
             boolean isFollowingTopic = false;
             if(pageViewModel.getIsFollowingTopic().getValue() != null) {
@@ -491,12 +492,12 @@ public class PlaceholderFragment extends Fragment {
             }
 
             if(isFollowingTopic) {
-                pageViewModel.stopFollowingTopic(usernameValue, topicValue.getName(), topicValue.getTopicCategory());
+                pageViewModel.stopFollowingTopic(user, topicValue.getName(), topicValue.getTopicCategory());
                 //TODO: change the chip button state on stop following topic
                 topicChip.setCheckedIconVisible(true);
                 topicChip.setCheckedIconResource(R.drawable.baseline_add_24);
             } else {
-                pageViewModel.startFollowingTopic(usernameValue, topicValue.getName(), topicValue.getTopicCategory());
+                pageViewModel.startFollowingTopic(user, topicValue.getName(), topicValue.getTopicCategory());
                 //TODO: change the chip button state on start following topic
                 topicChip.setCheckedIconVisible(true);
                 topicChip.setBackgroundColor(getResources().getColor(R.color.purple_500));

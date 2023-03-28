@@ -5,6 +5,7 @@ import com.example.buddylearner.data.datasources.TransformDataSource;
 import com.example.buddylearner.data.model.Topic;
 import com.example.buddylearner.data.model.TopicsCategory;
 import com.example.buddylearner.data.model.User;
+import com.example.buddylearner.data.model.UserTopic;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -52,12 +53,16 @@ public class TransformRepository {
         dataSource.getUsername(successListener, failureListener);
     }
 
-    public void loadTutorUsers(String username, List<Topic> userFollowedTopics, OnSuccessListener<List<User>> successListener, OnFailureListener failureListener) {
-        dataSource.loadTutorUsers(username, userFollowedTopics, successListener, failureListener);
+    public void loadTutorUsers(User user, List<UserTopic> userFollowedTopics, OnSuccessListener<List<UserTopic>> successListener, OnFailureListener failureListener) {
+        dataSource.loadTutorUsers(user, userFollowedTopics, successListener, failureListener);
     }
 
-    public void loadUserFollowedTopics(String username, OnSuccessListener<List<Topic>> successListener, OnFailureListener failureListener) {
-        dataSource.loadUserFollowedTopics(username, successListener, failureListener);
+    public void loadUserFollowedTopics(User user, OnSuccessListener<List<UserTopic>> successListener, OnFailureListener failureListener) {
+        dataSource.loadUserFollowedTopics(user, successListener, failureListener);
+    }
+
+    public void loadCurrentUser(String currentUsername, OnSuccessListener<User> successListener, OnFailureListener failureListener) {
+        dataSource.loadCurrentUser(currentUsername, successListener, failureListener);
     }
 
 }

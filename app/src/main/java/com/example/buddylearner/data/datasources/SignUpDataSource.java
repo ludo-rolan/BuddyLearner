@@ -33,6 +33,7 @@ public class SignUpDataSource {
         try {
             // TODO: handle User registration
             User signUpUser = new User(
+         null,
                 username,
                 email,
                 password,

@@ -22,21 +22,31 @@ public class User {
         this.password = password;
     }
 
-    // constructor for registration
-    public User(String userName, String email, String password, UserRole role) {
+    // constructor for following topic
+    public User(String userId, String userName, String email, UserRole role) {
+        this.userId = userId;
         this.userName = userName;
         this.email = email;
-        this.password = password;
-        this.role = String.valueOf(role.learner);
+        this.role = role.name().equalsIgnoreCase(UserRole.learner.name()) ? UserRole.learner.name() : UserRole.tutor.name();;
     }
 
-    // constructor for retrieving all users in firestore
-    public User(String userId, String userName, String email, String password) {
+    // constructor for registration & retrieving all users in firestore
+    public User(String userId, String userName, String email, String password, UserRole role) {
         this.userId = userId;
         this.userName = userName;
         this.email = email;
         this.password = password;
+        this.role = role.name().equalsIgnoreCase(UserRole.learner.name()) ? UserRole.learner.name() : UserRole.tutor.name();
+        //this.role = String.valueOf(role.learner);
     }
+
+    // constructor for retrieving all users in firestore
+//    public User(String userId, String userName, String email, String password) {
+//        this.userId = userId;
+//        this.userName = userName;
+//        this.email = email;
+//        this.password = password;
+//    }
 
     public String getUserId() {
         return userId;
@@ -46,7 +56,7 @@ public class User {
         return userName;
     }
 
-    public void setUserName() {
+    public void setUserName(String userName) {
         this.userName = userName;
     }
 
@@ -54,16 +64,16 @@ public class User {
         return email;
     }
 
-    public void setEmail() {
+    public void setEmail(String email) {
         this.email = email;
     }
 
     public String getPassword() { return password; }
 
-    public void setPassword() { this.password = password; }
+    public void setPassword(String password) { this.password = password; }
 
     public String getRole() { return role; }
 
-    public void setRole() { this.role = role; }
+    public void setRole(String role) { this.role = role; }
 
 }

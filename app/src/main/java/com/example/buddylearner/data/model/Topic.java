@@ -40,4 +40,10 @@ public class Topic {
     public Timestamp getDate() { return date; }
 
     public void setDate (Timestamp date) { this.date = date; }
+
+//    public Topic getTopic() { return this; }
+//    public void setTopic(Topic topic) {
+//        this.name = topic.name;
+//        this.topicCategory = topic.topicCategory;
+//    }
 }

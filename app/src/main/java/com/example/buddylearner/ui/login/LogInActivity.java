@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.buddylearner.R;
@@ -94,7 +95,10 @@ public class LogInActivity extends AppCompatActivity {
         final EditText logInUsernameEditText = activityLoginBinding.logInUsernameEditText;
         final EditText logInPasswordEditText = activityLoginBinding.logInPasswordEditText;
         final Button logInButton = activityLoginBinding.logInButton;
-//        final ProgressBar loadingProgressBar = activitySignUpBinding.loading;
+        final ProgressBar loadingProgressBar = activityLoginBinding.loading;
+
+        // Remove the loading bar from screen
+        loadingProgressBar.setVisibility(View.GONE);
 
         logInViewModel.getLogInUiState().observe(this, logInUiState -> {
             if (logInUiState == null) {
@@ -113,7 +117,7 @@ public class LogInActivity extends AppCompatActivity {
             if (logInResult == null) {
                 return;
             }
-//                loadingProgressBar.setVisibility(View.GONE);
+                loadingProgressBar.setVisibility(View.GONE);
             if (logInResult.getError() != null) {
                 showLogInFailed(logInResult.getError());
             }
@@ -152,7 +156,7 @@ public class LogInActivity extends AppCompatActivity {
         });
 
         logInButton.setOnClickListener(v -> {
-//                loadingProgressBar.setVisibility(View.VISIBLE);
+                loadingProgressBar.setVisibility(View.VISIBLE);
             boolean result = logInViewModel.logIn(logInUsernameEditText.getText().toString(), logInPasswordEditText.getText().toString());
 
             if(result) {

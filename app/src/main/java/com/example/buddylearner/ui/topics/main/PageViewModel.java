@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.buddylearner.data.model.Topic;
 import com.example.buddylearner.data.model.TopicsCategory;
+import com.example.buddylearner.data.model.User;
 import com.example.buddylearner.data.repositories.SignUpRepository;
 import com.example.buddylearner.data.repositories.TopicsPageRepository;
 
@@ -24,7 +25,8 @@ public class PageViewModel extends ViewModel {
     private final MutableLiveData<List<TopicsCategory>> topicsCategories = new MutableLiveData<>();
     private final MutableLiveData<List<Topic>> topics = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isFollowingTopic = new MutableLiveData<>();
-    private final MutableLiveData<String> username = new MutableLiveData<>();
+    // user with username and role
+    private final MutableLiveData<User> user = new MutableLiveData<>();
     private TopicsPageRepository topicsPageRepository;
 
     public PageViewModel(TopicsPageRepository topicsPageRepository){ this.topicsPageRepository = topicsPageRepository; }
@@ -45,7 +47,7 @@ public class PageViewModel extends ViewModel {
 
     public LiveData<List<Topic>> getTopics () { return topics; }
 
-    public LiveData<String> getUsername () { return username; }
+    public LiveData<User> getUser () { return user; }
 
     public LiveData<Boolean> getIsFollowingTopic () { return isFollowingTopic; }
 
@@ -65,16 +67,16 @@ public class PageViewModel extends ViewModel {
         topicsPageRepository.getIsFollowingTopic(isFollowingTopic::postValue, Throwable::printStackTrace, username, topicName);
     }
 
-    public void loadUsername() {
-        topicsPageRepository.getUsername(username::postValue, Throwable::printStackTrace);
+    public void loadUser() {
+        topicsPageRepository.getUser(user::postValue, Throwable::printStackTrace);
     }
 
-    public void startFollowingTopic(String username, String topicName, String topicCategory) {
-        topicsPageRepository.startFollowingTopic(username, topicName, topicCategory);
+    public void startFollowingTopic(User user, String topicName, String topicCategory) {
+        topicsPageRepository.startFollowingTopic(user, topicName, topicCategory);
     }
 
-    public void stopFollowingTopic(String username, String topicName, String topicCategory) {
-        topicsPageRepository.stopFollowingTopic(username, topicName, topicCategory);
+    public void stopFollowingTopic(User user, String topicName, String topicCategory) {
+        topicsPageRepository.stopFollowingTopic(user, topicName, topicCategory);
     }
 
 }
