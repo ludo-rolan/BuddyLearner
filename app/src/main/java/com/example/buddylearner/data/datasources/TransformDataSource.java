@@ -151,6 +151,8 @@ public class TransformDataSource {
                     }
                 });
 
+
+        // old operation
 //        dataSource.getFirebaseFirestoreInstance()
 //                .collection("following")
 //                .document(username)
