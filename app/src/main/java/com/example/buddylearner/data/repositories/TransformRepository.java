@@ -61,8 +61,20 @@ public class TransformRepository {
         dataSource.loadUserFollowedTopics(user, successListener, failureListener);
     }
 
-    public void loadCurrentUser(String currentUsername, OnSuccessListener<User> successListener, OnFailureListener failureListener) {
-        dataSource.loadCurrentUser(currentUsername, successListener, failureListener);
+    public void loadCurrentUser(OnSuccessListener<User> successListener, OnFailureListener failureListener) {
+        dataSource.loadCurrentUser(successListener, failureListener);
+    }
+
+    public void sendTutorRequest(String tutorName) {
+        dataSource.sendTutorRequest(tutorName);
+    }
+
+    public void loadTutor(String tutorName, OnSuccessListener<User> successListener, OnFailureListener failureListener) {
+        dataSource.loadTutor(tutorName, successListener, failureListener);
+    }
+
+    public void loadTutorTopics(String tutorName, OnSuccessListener<List<UserTopic>> successListener, OnFailureListener failureListener) {
+        dataSource.loadTutorTopics(tutorName, successListener, failureListener);
     }
 
 }

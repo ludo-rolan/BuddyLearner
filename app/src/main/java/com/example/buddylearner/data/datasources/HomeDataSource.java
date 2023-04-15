@@ -52,24 +52,30 @@ public class HomeDataSource {
 
 
     public void findUser(OnSuccessListener<User> successListener, OnFailureListener failureListener, String username) {
-        dataSource.getFirebaseFirestoreInstance()
-                .collection("users")
-                .document(username)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    User user = new User(
-                            documentSnapshot.getString("userId"),
-                            documentSnapshot.getString("userName"),
-                            documentSnapshot.getString("email"),
+
+        if(username != null) {
+            dataSource.getFirebaseFirestoreInstance()
+                    .collection("users")
+                    .document(username)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        User user = new User(
+                                documentSnapshot.getString("userId"),
+                                documentSnapshot.getString("userName"),
+                                documentSnapshot.getString("email"),
 //                            documentSnapshot.getString("password"),
-                            documentSnapshot.getString("role").equalsIgnoreCase(UserRole.learner.name()) ? UserRole.learner : UserRole.tutor
-                    );
+                                documentSnapshot.getString("role").equalsIgnoreCase(UserRole.learner.name()) ? UserRole.learner : UserRole.tutor
+                        );
 
-                    Log.d(TAG, "HomeDataSource current username: " + user.getUserName());
+                        Log.d(TAG, "HomeDataSource current username: " + user.getUserName());
 
-                    successListener.onSuccess(user);
-                })
-                .addOnFailureListener(failureListener);
+                        successListener.onSuccess(user);
+                    })
+                    .addOnFailureListener(failureListener);
+        }
+        else {
+            Log.w(TAG, "username is null");
+        }
     }
 
 }

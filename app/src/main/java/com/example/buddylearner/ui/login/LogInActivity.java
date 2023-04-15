@@ -4,11 +4,14 @@ import static android.content.ContentValues.TAG;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -27,6 +30,7 @@ import com.example.buddylearner.databinding.ActivityLoginBinding;
 import com.example.buddylearner.ui.base.HomeActivity;
 import com.example.buddylearner.ui.signup.SignUpActivity;
 import com.example.buddylearner.ui.topics.TopicsActivity;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Objects;
@@ -36,6 +40,10 @@ public class LogInActivity extends AppCompatActivity {
     //    la classe binding générée pour le fichier activity_sign_in.xml est ActivitySignInBinding
     private ActivityLoginBinding activityLoginBinding;
     private LogInViewModel logInViewModel;
+    // material toolbar can be used
+    private MaterialToolbar toolbar;
+    // default android action bar can be used
+    private ActionBar actionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,11 +56,20 @@ public class LogInActivity extends AppCompatActivity {
 
 
 //        récupérer la barre d'action et afficher le bouton haut <-
-        try {
-            Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        } catch (NullPointerException npe) {
-            Log.getStackTraceString(npe);
-        }
+//        try {
+//            Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+//        } catch (NullPointerException npe) {
+//            Log.getStackTraceString(npe);
+//        }
+        // get the default android action bar and customize it with a white background
+//        actionBar = getSupportActionBar();
+//        Drawable drawable = ContextCompat.getDrawable(this, R.drawable.white_background);
+//        // actionBar.setBackgroundDrawable(drawable);
+//        actionBar.setElevation(0.0f);
+//        // actionBar.setDisplayShowTitleEnabled(true);
+
+        // add the toolbar/actionbar to layout
+        setSupportActionBar(activityLoginBinding.toolbar);
 
 
         // TODO: detect if the parent activity is sign in activity for special treatment --

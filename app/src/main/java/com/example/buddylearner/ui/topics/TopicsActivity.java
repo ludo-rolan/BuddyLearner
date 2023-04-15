@@ -1,6 +1,7 @@
 package com.example.buddylearner.ui.topics;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import com.example.buddylearner.R;
@@ -15,6 +16,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -33,6 +36,9 @@ public class TopicsActivity extends AppCompatActivity {
 
     private ActivityTopicsBinding activityTopicsBinding;
 
+    // get default android action bar
+    ActionBar actionBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,11 +49,21 @@ public class TopicsActivity extends AppCompatActivity {
         //setSupportActionBar(activityTopicsBinding.toolbar);
 
         //        récupérer la barre d'action et afficher le bouton haut <-
-        try {
-            Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        } catch (NullPointerException npe) {
-            Log.getStackTraceString(npe);
-        }
+//        try {
+//            Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+//        } catch (NullPointerException npe) {
+//            Log.getStackTraceString(npe);
+//        }
+
+        // get the default action bar and customize it with a white background
+//        actionBar = getSupportActionBar();
+//        Drawable drawable = ContextCompat.getDrawable(this, R.drawable.white_background);
+//        // actionBar.setBackgroundDrawable(drawable);
+//        actionBar.setElevation(0.0f);
+//        // actionBar.setDisplayShowTitleEnabled(true);
+
+        // add the toolbar/actionbar to layout - the is the best way
+        setSupportActionBar(activityTopicsBinding.toolbar);
 
 
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());

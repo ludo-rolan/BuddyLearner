@@ -29,7 +29,7 @@ import com.example.buddylearner.data.model.Topic;
 import com.example.buddylearner.data.model.User;
 import com.example.buddylearner.databinding.FragmentFollowedTopicsBinding;
 import com.example.buddylearner.databinding.FragmentTopicsBinding;
-import com.example.buddylearner.ui.elements.ModalBottomSheet;
+import com.example.buddylearner.ui.elements.FollowTopicCategoryModalBottomSheet;
 import com.example.buddylearner.ui.follow.topicsCategory.FollowTopicsCategoryActivity;
 import com.example.buddylearner.ui.topics.FollowedTopicsListViewAdapter;
 import com.example.buddylearner.ui.topics.TopicsGridViewAdapter;
@@ -308,8 +308,8 @@ public class PlaceholderFragment extends Fragment {
                         cardView.setOnClickListener(view -> {
 
                             //TODO: open bottomsheet when click on the card view
-                            ModalBottomSheet modalBottomSheet = new ModalBottomSheet();
-                            modalBottomSheet.show(getParentFragmentManager(), ModalBottomSheet.TAG);
+                            FollowTopicCategoryModalBottomSheet modalBottomSheet = new FollowTopicCategoryModalBottomSheet();
+                            modalBottomSheet.show(getParentFragmentManager(), FollowTopicCategoryModalBottomSheet.TAG);
 
                         });
 

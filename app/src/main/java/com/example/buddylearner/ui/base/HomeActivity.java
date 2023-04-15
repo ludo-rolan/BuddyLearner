@@ -47,6 +47,7 @@ public class HomeActivity extends AppCompatActivity {
         activityHomeBinding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(activityHomeBinding.getRoot());
 
+        // add the toolbar/actionbar to layout
         setSupportActionBar(activityHomeBinding.appBarHome.toolbar);
 
         if (activityHomeBinding.appBarHome.fab != null) {

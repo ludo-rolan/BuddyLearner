@@ -11,7 +11,7 @@
 <!--    <style name="Theme.BuddyLearner" parent="AppBaseTheme.App">-->
 <!--    <style name="Theme.BuddyLearner" parent="Theme.Material3.DayNight.NoActionBar">-->
 <!--    <style name="Theme.BuddyLearner" parent="Theme.Material3.DynamicColors.DayNight">-->
-    <style name="Theme.BuddyLearner" parent="Theme.Material3.DynamicColors.DayNight">
+    <style name="Theme.BuddyLearner" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_200</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>

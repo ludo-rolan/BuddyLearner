@@ -9,9 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
@@ -25,8 +27,12 @@ import com.example.buddylearner.data.model.User;
 import com.example.buddylearner.data.model.UserTopic;
 import com.example.buddylearner.databinding.FragmentTransformBinding;
 import com.example.buddylearner.databinding.ItemTransformBinding;
+import com.example.buddylearner.ui.elements.FollowTopicCategoryModalBottomSheet;
+import com.example.buddylearner.ui.elements.TutorTopicsModalBottomSheet;
+import com.example.buddylearner.ui.notifications.SendTutorRequest;
 import com.example.buddylearner.ui.topics.main.PageViewModel;
 import com.example.buddylearner.ui.topics.main.TopicsPageViewModelFactory;
+import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,6 +48,8 @@ public class TransformFragment extends Fragment {
 
     private FragmentTransformBinding fragmentTransformBinding;
     private TransformViewModel transformViewModel;
+    List<String> oppositeRoleUsers = new ArrayList<>();
+    TutorTopicsModalBottomSheet modalBottomSheet;
 
 
 //    public TransformFragment() {
@@ -55,6 +63,10 @@ public class TransformFragment extends Fragment {
 
         transformViewModel = new ViewModelProvider(this, new TransformViewModelFactory())
                 .get(TransformViewModel.class);
+
+
+        //TODO: create proper view model for bottom sheet
+        //modalBottomSheet = new TutorTopicsModalBottomSheet(oppositeRoleUsers);
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -67,7 +79,7 @@ public class TransformFragment extends Fragment {
 
         RecyclerView recyclerView = fragmentTransformBinding.recyclerviewTransform;
         ListAdapter<String, TransformViewHolder> adapter = new TransformAdapter();
-        recyclerView.setAdapter(adapter);
+        // recyclerView.setAdapter(adapter);
         //transformViewModel.getTexts().observe(getViewLifecycleOwner(), adapter::submitList);
 
         // new implementation
@@ -135,8 +147,8 @@ public class TransformFragment extends Fragment {
 //
 //         });
 
-        String currentUserUsername = super.getActivity().getIntent().getStringExtra("username");
-        transformViewModel.loadCurrentUser(currentUserUsername);
+        // String currentUserUsername = super.getActivity().getIntent().getStringExtra("username");
+        transformViewModel.loadCurrentUser();
         transformViewModel.getCurrentUser().observe(getViewLifecycleOwner(), user -> {
             Log.d(TAG, "current user displayname : " + user.getUserName());
 
@@ -147,7 +159,7 @@ public class TransformFragment extends Fragment {
                 transformViewModel.getTutorUsers().observe(getViewLifecycleOwner(), tutorUsersUserTopics -> {
 
                     Log.d(TAG, "list of tutors :");
-                    List<String> oppositeRoleUsers = new ArrayList<>();
+                    //List<String> oppositeRoleUsers = new ArrayList<>();
                     if(tutorUsersUserTopics != null) {
 
                         for(UserTopic tutorUserUserTopic : tutorUsersUserTopics) {
@@ -167,6 +179,44 @@ public class TransformFragment extends Fragment {
 
         });
 
+
+        // doesn't work stop the app continuously
+        // test of another way to get data in the bottom sheet recycleview
+//        transformViewModel.loadCurrentUser();
+//        User user = transformViewModel.getCurrentUser().getValue();
+//
+//        if(user != null)
+//            transformViewModel.loadUserFollowedTopics(user);
+//
+//        List<UserTopic> userFollowedTopics = transformViewModel.getUserFollowedTopics().getValue();
+//
+//        if(user != null && userFollowedTopics != null)
+//            transformViewModel.loadTutorUsers(user, userFollowedTopics);
+//
+//        List<UserTopic> tutorUsersUserTopics = transformViewModel.getTutorUsers().getValue();
+//        if(tutorUsersUserTopics != null) {
+//
+//            for(UserTopic tutorUserUserTopic : tutorUsersUserTopics) {
+//                if(tutorUserUserTopic != null)
+//                    Log.d(TAG, "user finded with topic : " + tutorUserUserTopic.getTopicName());
+//
+//                oppositeRoleUsers.add(tutorUserUserTopic.getUserName());
+//            }
+//
+//            adapter.submitList(oppositeRoleUsers);
+//
+//        }
+
+        recyclerView.setAdapter(adapter);
+        // test of another way to get data in the bottom sheet recycleview
+
+
+//        if(oppositeRoleUsers != null) {
+//            Log.d(TAG, "opposite role users transform fragment : " + oppositeRoleUsers);
+//            adapter.submitList(oppositeRoleUsers);
+//        }
+
+
         // doesn't work!
 //        User user = null;
 //        if(transformViewModel.getCurrentUser().getValue() != null)
@@ -179,8 +229,16 @@ public class TransformFragment extends Fragment {
 //        }
 
 
-
         return root;
+    }
+
+
+    // added
+
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
@@ -189,7 +247,7 @@ public class TransformFragment extends Fragment {
         fragmentTransformBinding = null;
     }
 
-    private static class TransformAdapter extends ListAdapter<String, TransformViewHolder> {
+    private class TransformAdapter extends ListAdapter<String, TransformViewHolder> {
 
         private final List<Integer> drawables = Arrays.asList(
                 R.drawable.avatar_1,
@@ -230,6 +288,7 @@ public class TransformFragment extends Fragment {
             return new TransformViewHolder(binding);
         }
 
+        // use this method to perform actions on recycle view items - buttons - textview - imageview ...
         @Override
         public void onBindViewHolder(@NonNull TransformViewHolder holder, int position) {
             holder.textView.setText(getItem(position));
@@ -237,6 +296,69 @@ public class TransformFragment extends Fragment {
                     ResourcesCompat.getDrawable(holder.imageView.getResources(),
                             drawables.get(position),
                             null));
+
+            // set action on button click
+            holder.button.setOnClickListener(view -> {
+
+                SendTutorRequest tutorRequest = new SendTutorRequest();
+                tutorRequest.send(view.getContext());
+                // Toast.makeText(view.getContext(), "clic - " + view.getId(), Toast.LENGTH_LONG).show();
+
+                // transformViewModel.loadCurrentUser();
+                transformViewModel.loadTutor(getItem(position));
+                transformViewModel.loadTutorTopics(getItem(position));
+
+                List<String> listOfTutorTopics = new ArrayList<>();
+                transformViewModel.getTutorTopics().observe(getViewLifecycleOwner(), tutorTopics -> {
+                    if(tutorTopics != null) {
+                        for(UserTopic tutorTopic: tutorTopics) {
+                            listOfTutorTopics.add(tutorTopic.getTopicName());
+                        }
+                    }
+                });
+
+
+                // test with static list
+//                oppositeRoleUsers = new ArrayList<String>(){
+//                    {
+//                        add("communication");
+//                        add("programming");
+//                        add("web");
+//                        add("mobile");
+//                    }
+//                };
+
+
+                //TODO: open bottomsheet when click on following button
+                //TODO: create proper view model for bottom sheet
+                TutorTopicsModalBottomSheet modalBottomSheet = new TutorTopicsModalBottomSheet(listOfTutorTopics);
+//                TutorTopicsModalBottomSheet modalBottomSheet = new TutorTopicsModalBottomSheet();
+                // modalBottomSheet.show(getSupportFragmentManager(), ModalBottomSheet.TAG);
+                modalBottomSheet.show(getParentFragmentManager(), TutorTopicsModalBottomSheet.TAG);
+
+                Bundle bundle = new Bundle();
+                if(listOfTutorTopics != null) {
+                    bundle.putStringArrayList("listOfTutorTopics", (ArrayList<String>) listOfTutorTopics);
+                }
+                bundle.putString("title", "tutor topics");
+                bundle.putString("text", "topic i " + "topicName");
+
+                View bottomSheetView = LayoutInflater.from(view.getContext()).inflate(
+                        R.layout.bottom_sheet,
+                        (CoordinatorLayout) view.findViewById(R.id.bottom_sheet_container)
+                );
+
+                //                modalBottomSheet.onCreateView(getLayoutInflater(), bottomSheetView.findViewById(R.id.bottom_sheet_container), bundle);
+
+                if(bundle != null) {
+
+                    Log.d(TAG, "listOfTutorTopics list : " + bundle.getStringArrayList("listOfTutorTopics"));
+                    modalBottomSheet.onCreateView(getLayoutInflater(), bottomSheetView.findViewById(R.id.bottom_sheet_container), bundle);
+
+                }
+
+                //adapter.submitList(oppositeRoleUsers);
+            });
         }
     }
 
@@ -244,11 +366,14 @@ public class TransformFragment extends Fragment {
 
         private final ImageView imageView;
         private final TextView textView;
+        private final MaterialButton button;
 
         public TransformViewHolder(ItemTransformBinding binding) {
             super(binding.getRoot());
             imageView = binding.imageViewItemTransform;
             textView = binding.textViewItemTransform;
+            button = binding.materialButton;
+            button.setId(View.generateViewId());
         }
     }
 }

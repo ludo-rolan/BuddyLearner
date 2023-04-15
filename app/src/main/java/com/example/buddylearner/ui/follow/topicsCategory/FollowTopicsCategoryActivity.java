@@ -1,6 +1,6 @@
 package com.example.buddylearner.ui.follow.topicsCategory;
 
-import static com.example.buddylearner.ui.elements.ModalBottomSheet.TAG;
+import static com.example.buddylearner.ui.elements.FollowTopicCategoryModalBottomSheet.TAG;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -17,7 +17,7 @@ import com.example.buddylearner.R;
 import com.example.buddylearner.databinding.ActivityFollowTopicsCategoryBinding;
 import com.example.buddylearner.databinding.ActivityHomeBinding;
 import com.example.buddylearner.databinding.BottomSheetBinding;
-import com.example.buddylearner.ui.elements.ModalBottomSheet;
+import com.example.buddylearner.ui.elements.FollowTopicCategoryModalBottomSheet;
 
 public class FollowTopicsCategoryActivity extends AppCompatActivity {
 
@@ -57,8 +57,8 @@ public class FollowTopicsCategoryActivity extends AppCompatActivity {
         followingButton.setOnClickListener(view -> {
 
             //TODO: open bottomsheet when click on following button
-            ModalBottomSheet modalBottomSheet = new ModalBottomSheet();
-            modalBottomSheet.show(getSupportFragmentManager(), ModalBottomSheet.TAG);
+            FollowTopicCategoryModalBottomSheet modalBottomSheet = new FollowTopicCategoryModalBottomSheet();
+            modalBottomSheet.show(getSupportFragmentManager(), FollowTopicCategoryModalBottomSheet.TAG);
 
             Bundle bundle = new Bundle();
             bundle.putString("title", "Unfollow");

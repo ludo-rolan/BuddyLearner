@@ -9,12 +9,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.buddylearner.R;
 import com.example.buddylearner.databinding.BottomSheetBinding;
-import com.example.buddylearner.databinding.FragmentTopicsBinding;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-public class ModalBottomSheet extends BottomSheetDialogFragment {
+public class FollowTopicCategoryModalBottomSheet extends BottomSheetDialogFragment {
 
     public final static String TAG = "ModalBottomSheet";
 

@@ -9,7 +9,7 @@ public class FirebaseDataSource {
     private FirebaseFirestore mFirebaseFirestore = null;
 
 //    singleton design pattern implemented for getting firebase authentication
-    public  FirebaseAuth getFirebaseAuthInstance () {
+    public synchronized   FirebaseAuth getFirebaseAuthInstance () {
         if(mAuth == null) {
             mAuth = FirebaseAuth.getInstance();
             return mAuth;
@@ -18,7 +18,7 @@ public class FirebaseDataSource {
     }
 
 //    singleton design pattern implemented for getting firebase firestore
-    public  FirebaseFirestore getFirebaseFirestoreInstance () {
+    public synchronized FirebaseFirestore getFirebaseFirestoreInstance () {
         if(mFirebaseFirestore == null) {
             mFirebaseFirestore = FirebaseFirestore.getInstance();
             return mFirebaseFirestore;

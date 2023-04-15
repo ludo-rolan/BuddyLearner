@@ -15,6 +15,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.AggregateQuery;
 import com.google.firebase.firestore.AggregateQuerySnapshot;
 import com.google.firebase.firestore.AggregateSource;
@@ -481,7 +483,7 @@ public class TransformDataSource {
 
     }
 
-    public void loadCurrentUser(String currentUsername, OnSuccessListener<User> successListener, OnFailureListener failureListener) {
+    public void loadCurrentUser(OnSuccessListener<User> successListener, OnFailureListener failureListener) {
 
         // doesn't work!
 //        String username = "";
@@ -491,7 +493,14 @@ public class TransformDataSource {
 //
 //        Log.d(TAG, "transform datasource current username : " + username);
 
+        String currentUsername = null;
+        FirebaseUser firebaseUser = dataSource.getFirebaseAuthInstance().getCurrentUser();
+        if(firebaseUser != null) {
+            currentUsername = firebaseUser.getDisplayName();
+        }
+
         if(currentUsername != null) {
+
             dataSource.getFirebaseFirestoreInstance()
                     .collection("users")
                     .document(currentUsername)
@@ -509,8 +518,128 @@ public class TransformDataSource {
                         }
                     })
                     .addOnFailureListener(failureListener);
+
         }
 
     }
+
+    public void sendTutorRequest(String tutorName) {
+
+        if(tutorName != null) {
+
+            Task<QuerySnapshot> tutorQuery = dataSource.getFirebaseFirestoreInstance()
+                    .collection("users")
+                    .whereEqualTo("userName", tutorName)
+                    .get();
+
+
+            if(tutorQuery.isSuccessful()) {
+                tutorQuery.addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                        if(queryDocumentSnapshots != null) {
+
+                            for(DocumentSnapshot documentSnapshot: queryDocumentSnapshots.getDocuments()) {
+
+                                // TODO: Need the current user to send request to tutor
+
+                            }
+
+                        }
+
+                    }
+                });
+
+            }
+
+        }
+
+    }
+
+
+    public void loadTutor(String tutorName, OnSuccessListener<User> successListener, OnFailureListener failureListener) {
+
+        if(tutorName != null) {
+
+            dataSource.getFirebaseFirestoreInstance()
+                    .collection("users")
+                    .whereEqualTo("userName", tutorName)
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                            if(queryDocumentSnapshots.isEmpty()) {
+                                Log.d(TAG, "loading tutor is empty !");
+                                successListener.onSuccess(null);
+                            }
+                            else {
+                                User tutor = null;
+                                for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                                    Log.d(TAG, document.getId() + " => " + document.getData());
+                                    tutor = document.toObject(User.class);
+                                }
+
+                                successListener.onSuccess(tutor);
+                                Log.d(TAG, "loading tutor successful !");
+                            }
+
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            failureListener.onFailure(e);
+                            Log.d(TAG, "loading tutor  failed !");
+                        }
+                    });
+
+        }
+
+    }
+
+
+    public void loadTutorTopics(String tutorName, OnSuccessListener<List<UserTopic>> successListener, OnFailureListener failureListener) {
+
+        if(tutorName != null) {
+
+            dataSource.getFirebaseFirestoreInstance()
+                    .collection("isFollowing")
+                    .whereEqualTo("userName", tutorName)
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                            if(queryDocumentSnapshots.isEmpty()) {
+                                Log.d(TAG, "loading tutor topics is empty !");
+                                successListener.onSuccess(null);
+                            }
+                            else {
+                                List<UserTopic> tutorTopics = new ArrayList<>();
+                                for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                                    Log.d(TAG, document.getId() + " => " + document.getData());
+                                    tutorTopics.add(document.toObject(UserTopic.class));
+                                }
+
+                                successListener.onSuccess(tutorTopics);
+                                Log.d(TAG, "loading tutor topics successful !");
+                            }
+
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            failureListener.onFailure(e);
+                            Log.d(TAG, "loading tutor topics  failed !");
+                        }
+                    });
+
+        }
+
+    }
+
 
 }

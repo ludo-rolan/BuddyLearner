@@ -23,6 +23,8 @@ public class TransformViewModel extends ViewModel {
     private final MutableLiveData<List<UserTopic>> tutorUsersUserTopics = new MutableLiveData<>();
     private final MutableLiveData<List<UserTopic>> userFollowedTopics = new MutableLiveData<>();
     private final MutableLiveData<User> currentUser = new MutableLiveData<>();
+    private final MutableLiveData<User> tutor = new MutableLiveData<>();
+    private final MutableLiveData<List<UserTopic>> tutorTopics = new MutableLiveData<>();
     private TransformRepository transformRepository;
 
     public TransformViewModel() {
@@ -75,10 +77,26 @@ public class TransformViewModel extends ViewModel {
 
     public LiveData<List<UserTopic>> getUserFollowedTopics() { return userFollowedTopics; }
 
-    public void loadCurrentUser(String currentUsername) {
-        transformRepository.loadCurrentUser(currentUsername, currentUser::setValue, Throwable::printStackTrace);
+    public void loadCurrentUser() {
+        transformRepository.loadCurrentUser(currentUser::setValue, Throwable::printStackTrace);
     }
 
     public LiveData<User> getCurrentUser() { return currentUser; }
+
+    public void sendTutorRequest(User currentUser, String tutorName, String topicName, String topicCategory) {
+        transformRepository.sendTutorRequest(tutorName);
+    }
+
+    public void loadTutor(String tutorName) {
+        transformRepository.loadTutor(tutorName, tutor::setValue, Throwable::printStackTrace);
+    }
+
+    public LiveData<User> getTutor() { return tutor; }
+
+    public void loadTutorTopics(String tutorName) {
+        transformRepository.loadTutorTopics(tutorName, tutorTopics::setValue, Throwable::printStackTrace);
+    }
+
+    public LiveData<List<UserTopic>> getTutorTopics() { return tutorTopics; }
 
 }
