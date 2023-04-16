@@ -65,8 +65,12 @@ public class TransformRepository {
         dataSource.loadCurrentUser(successListener, failureListener);
     }
 
-    public void sendTutorRequest(String tutorName) {
-        dataSource.sendTutorRequest(tutorName);
+    public void sendTutorRequest(User currentUser, String tutorName, String topicName, String topicCategory) {
+        dataSource.sendTutorRequest(currentUser, tutorName, topicName, topicCategory);
+    }
+
+    public void removeTutorRequest(User currentUser, String tutorName, String topicName, String topicCategory) {
+        dataSource.removeTutorRequest(currentUser, tutorName, topicName, topicCategory);
     }
 
     public void loadTutor(String tutorName, OnSuccessListener<User> successListener, OnFailureListener failureListener) {

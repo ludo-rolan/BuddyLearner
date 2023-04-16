@@ -84,7 +84,11 @@ public class TransformViewModel extends ViewModel {
     public LiveData<User> getCurrentUser() { return currentUser; }
 
     public void sendTutorRequest(User currentUser, String tutorName, String topicName, String topicCategory) {
-        transformRepository.sendTutorRequest(tutorName);
+        transformRepository.sendTutorRequest(currentUser, tutorName, topicName, topicCategory);
+    }
+
+    public void removeTutorRequest(User currentUser, String tutorName, String topicName, String topicCategory) {
+        transformRepository.removeTutorRequest(currentUser, tutorName, topicName, topicCategory);
     }
 
     public void loadTutor(String tutorName) {

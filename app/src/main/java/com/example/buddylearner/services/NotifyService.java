@@ -99,7 +99,8 @@ public abstract class NotifyService extends Service {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID);
 
         Intent notificationIntent = new Intent(context, NotificationActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 125, notificationIntent, 0);
+        // PendingIntent.FLAG_IMMUTABLE - 0 previously
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 125, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
 
         Bitmap payableLogo = BitmapFactory.decodeResource(getResources(), R.drawable.baseline_account_circle_24);
 

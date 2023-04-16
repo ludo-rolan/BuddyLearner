@@ -2,6 +2,16 @@ package com.example.buddylearner.ui.elements;
 
 import static android.content.ContentValues.TAG;
 
+import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +23,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DiffUtil;
@@ -26,8 +39,11 @@ import com.example.buddylearner.databinding.BottomSheetBinding;
 import com.example.buddylearner.databinding.ItemTransformBinding;
 import com.example.buddylearner.databinding.ItemTutorTopicsBottomSheetBinding;
 import com.example.buddylearner.databinding.TutorTopicsBottomSheetBinding;
+import com.example.buddylearner.services.NotifyService;
 import com.example.buddylearner.ui.base.transform.TransformFragment;
 import com.example.buddylearner.ui.base.transform.TransformViewModel;
+import com.example.buddylearner.ui.base.transform.TransformViewModelFactory;
+import com.example.buddylearner.ui.notification.NotificationActivity;
 import com.example.buddylearner.ui.notifications.SendTutorRequest;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
@@ -45,6 +61,8 @@ public class TutorTopicsModalBottomSheet extends BottomSheetDialogFragment {
 
     private String title;
     private String text;
+
+    TransformViewModel transformViewModel;
     TutorTopicsBottomSheetBinding bottomSheetBinding;
     List<String> oppositeRoleUsers;
 
@@ -55,6 +73,10 @@ public class TutorTopicsModalBottomSheet extends BottomSheetDialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        transformViewModel = new ViewModelProvider(this, new TransformViewModelFactory())
+                .get(TransformViewModel.class);
+
     }
 
     @Nullable
@@ -155,45 +177,101 @@ public class TutorTopicsModalBottomSheet extends BottomSheetDialogFragment {
                             drawables.get(position),
                             null));
 
+
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+
+                if(
+                        ContextCompat.checkSelfPermission(
+                                getContext(),
+                                android.Manifest.permission.POST_NOTIFICATIONS
+                        ) != PackageManager.PERMISSION_GRANTED
+                ){
+                    ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.POST_NOTIFICATIONS}, 101);
+                }
+
+            }
+
+
             // set action on button click
+            // TODO: implement the logic of sending and removing tutor request
             holder.button.setOnClickListener(view -> {
 
 //                SendTutorRequest tutorRequest = new SendTutorRequest();
 //                tutorRequest.send(view.getContext());
-                // Toast.makeText(view.getContext(), "clic - " + view.getId(), Toast.LENGTH_LONG).show();
 
-                // transformViewModel.loadCurrentUser();
-//                transformViewModel.loadTutor(getItem(position));
-//                transformViewModel.loadTutorTopics(getItem(position));
+                // TODO: get the request on database to create notification
+                // makeNotification(getContext());
 
-//                transformViewModel.getCurrentUser().observe(getViewLifecycleOwner(), user -> {
-//
-//                    transformViewModel.load
-//
-//                });
-
-//                //TODO: open bottomsheet when click on following button
-//                FollowTopicCategoryModalBottomSheet modalBottomSheet = new FollowTopicCategoryModalBottomSheet();
-//                // modalBottomSheet.show(getSupportFragmentManager(), ModalBottomSheet.TAG);
-//                modalBottomSheet.show(getParentFragmentManager(), FollowTopicCategoryModalBottomSheet.TAG);
-//
-//                Bundle bundle = new Bundle();
-//                bundle.putString("title", "tutor topics");
-//                bundle.putString("text", "topic i " + "topicName");
-//
-//                View bottomSheetView = LayoutInflater.from(view.getContext()).inflate(
-//                        R.layout.bottom_sheet,
-//                        (CoordinatorLayout) view.findViewById(R.id.bottom_sheet_container)
-//                );
-//
-//                modalBottomSheet.onCreateView(getLayoutInflater(), bottomSheetView.findViewById(R.id.bottom_sheet_container), bundle);
-
-//                transformViewModel.getTutor().observe(getViewLifecycleOwner(), tutor -> {
-//
-//                });
+                transformViewModel.loadCurrentUser();
+                transformViewModel.getCurrentUser().observe(getViewLifecycleOwner(), currentUser -> {
+                    // TODO: get the actual topic name and topic category of the tutor
+                    transformViewModel.sendTutorRequest(currentUser, holder.textView.getText().toString(), "topic name", "topicCategory");
+                });
 
             });
         }
+    }
+
+    // create an in app notification
+//    public void makeNotification(Context context, String title, String message, int smallIcon, int bigIcon, Class<?> intentClass) {
+    public void makeNotification(Context context) {
+
+    // must be extend by a class activity
+//        NotifyService notifyService = new NotifyService() {
+//            @Override
+//            protected Notification serviceNotification() {
+//                // createNotification is defined in the service class
+//                Notification notification = createNotification(title, message, smallIcon, bigIcon, intentClass);
+//                return notification;
+//            }
+//        };
+//
+//        notifyService.showNotification("hello world", context);
+
+        String channelId = "my_channel_0";
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(
+                context,
+                channelId
+        );
+
+        builder.setSmallIcon(R.drawable.baseline_notifications_active_24)
+                .setContentTitle("Notification title")
+                .setContentText("Some text for notification here")
+                .setAutoCancel(true)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        Intent intent = new Intent(context, NotificationActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("data", "Some value to be passed here");
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                context,
+                0,
+                intent,
+                PendingIntent.FLAG_MUTABLE
+        );
+
+        builder.setContentIntent(pendingIntent);
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = notificationManager.getNotificationChannel(channelId);
+
+            if(notificationChannel == null) {
+                int importance = NotificationManager.IMPORTANCE_HIGH;
+                notificationChannel = new NotificationChannel(
+                        channelId,
+                        "some descripotion",
+                        importance
+                );
+                notificationChannel.setLightColor(Color.GREEN);
+                notificationChannel.enableVibration(true);
+                notificationManager.createNotificationChannel(notificationChannel);
+            }
+        }
+
+        notificationManager.notify(0, builder.build());
+
     }
 
     private static class TutorTopicsBottomSheetViewHolder extends RecyclerView.ViewHolder {

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <uses-permission android:name = "android.permission.VIBRATE" />
     <uses-permission android:name= "android.permission.RECEIVE_BOOT_COMPLETED" />
 
@@ -79,6 +80,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+<!--        <service-->
+<!--            android:name=".services.NotifyService"-->
+<!--            android:icon="@drawable/baseline_notifications_active_24"-->
+<!--            android:label="MFS" />-->
     </application>
 
 </manifest>

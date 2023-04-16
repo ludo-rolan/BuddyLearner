@@ -1,7 +1,15 @@
 package com.example.buddylearner.ui.base.transform;
 
 import static android.content.ContentValues.TAG;
+import static android.provider.Settings.Global.getString;
 
+import static androidx.core.content.ContextCompat.getSystemService;
+
+import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +22,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
@@ -46,6 +57,7 @@ import java.util.List;
  */
 public class TransformFragment extends Fragment {
 
+    private static final String CHANNEL_ID = "my_channel_01";
     private FragmentTransformBinding fragmentTransformBinding;
     private TransformViewModel transformViewModel;
     List<String> oppositeRoleUsers = new ArrayList<>();
@@ -160,10 +172,10 @@ public class TransformFragment extends Fragment {
 
                     Log.d(TAG, "list of tutors :");
                     //List<String> oppositeRoleUsers = new ArrayList<>();
-                    if(tutorUsersUserTopics != null) {
+                    if (tutorUsersUserTopics != null) {
 
-                        for(UserTopic tutorUserUserTopic : tutorUsersUserTopics) {
-                            if(tutorUserUserTopic != null)
+                        for (UserTopic tutorUserUserTopic : tutorUsersUserTopics) {
+                            if (tutorUserUserTopic != null)
                                 Log.d(TAG, "user finded with topic : " + tutorUserUserTopic.getTopicName());
 
                             oppositeRoleUsers.add(tutorUserUserTopic.getUserName());
@@ -227,6 +239,51 @@ public class TransformFragment extends Fragment {
 //        } else {
 //            Log.d(TAG, "current user displayname new user variable null");
 //        }
+
+
+        // create a notification
+//        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), CHANNEL_ID)
+//                .setSmallIcon(R.drawable.baseline_person_24)
+//                .setContentTitle("content title")
+//                .setContentText("text content")
+//                .setStyle(new NotificationCompat.BigTextStyle()
+//                        .bigText("Much longer text that cannot fit one line..."))
+//                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+
+        // action to be performed on notification click
+        // Create an explicit intent for an Activity in your app
+//        Intent intent = new Intent(this, AlertDetails.class);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+//
+//        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+//                .setSmallIcon(R.drawable.notification_icon)
+//                .setContentTitle("My notification")
+//                .setContentText("Hello World!")
+//                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+//                // Set the intent that will fire when the user taps the notification
+//                .setContentIntent(pendingIntent)
+//                .setAutoCancel(true);
+
+
+        // display the notification
+//        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getContext());
+//
+//        int notificationId = 300;
+//        // notificationId is a unique int for each notification that you must define
+//        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+//            // TODO: Consider calling
+//            //    ActivityCompat#requestPermissions
+//            // here to request the missing permissions, and then overriding
+//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//            //                                          int[] grantResults)
+//            // to handle the case where the user grants the permission. See the documentation
+//            // for ActivityCompat#requestPermissions for more details.
+//            return null;
+//        }
+//        notificationManager.notify(notificationId, builder.build());
+
 
 
         return root;
@@ -375,5 +432,33 @@ public class TransformFragment extends Fragment {
             button = binding.materialButton;
             button.setId(View.generateViewId());
         }
+    }
+
+    private void createNotificationChannel() {
+
+
+
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is not in the Support Library.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            // create a notification channel
+            getString(R.string.channel_name);
+            CharSequence name = getString(R.string.channel_name);
+            // String description = getString(R.string.channel_description);
+            String description = getString(R.string.channel_name);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system. You can't change the importance
+            // or other notification behaviors after this.
+            //NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            NotificationManager notificationManager = getSystemService(getContext(), NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+
+        }
+
+
+
     }
 }

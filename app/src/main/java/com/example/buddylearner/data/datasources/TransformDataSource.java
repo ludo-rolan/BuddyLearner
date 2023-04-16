@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 
 import com.example.buddylearner.data.model.Topic;
 import com.example.buddylearner.data.model.TopicsCategory;
+import com.example.buddylearner.data.model.TutorRequest;
 import com.example.buddylearner.data.model.User;
 import com.example.buddylearner.data.model.UserTopic;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -523,37 +524,119 @@ public class TransformDataSource {
 
     }
 
-    public void sendTutorRequest(String tutorName) {
+    public void sendTutorRequest(User currentUser, String tutorName, String topicName, String topicCategory) {
 
-        if(tutorName != null) {
+//        if(tutorName != null) {
+//
+//            Task<QuerySnapshot> tutorQuery = dataSource.getFirebaseFirestoreInstance()
+//                    .collection("users")
+//                    .whereEqualTo("userName", tutorName)
+//                    .get();
+//
+//
+//            if(tutorQuery.isSuccessful()) {
+//                tutorQuery.addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//
+//                        if(queryDocumentSnapshots != null) {
+//
+//                            for(DocumentSnapshot documentSnapshot: queryDocumentSnapshots.getDocuments()) {
+//
+//                                // TODO: Need the current user to send request to tutor
+//
+//                            }
+//
+//                        }
+//
+//                    }
+//                });
+//
+//            }
+//
+//        }
 
-            Task<QuerySnapshot> tutorQuery = dataSource.getFirebaseFirestoreInstance()
-                    .collection("users")
-                    .whereEqualTo("userName", tutorName)
-                    .get();
+        TutorRequest tutorRequest = new TutorRequest(currentUser.getUserName(), tutorName, topicName, topicCategory, new Timestamp(new Date()));
+
+        if(currentUser != null && tutorName != null) {
+
+            // add topic to user isFollowing list
+            dataSource.getFirebaseFirestoreInstance()
+                    .collection("notifications")
+                    .add(tutorRequest)
+                    .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentReference> task) {
+                            Log.d(TAG, "tutor request notification added successfully !");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG, "tutor request notification add fail !");
+                        }
+                    });
+
+        }
+
+    }
 
 
-            if(tutorQuery.isSuccessful()) {
-                tutorQuery.addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+    public void removeTutorRequest(User currentUser, String tutorName, String topicName, String topicCategory) {
+
+        TutorRequest tutorRequest = new TutorRequest(currentUser.getUserName(), tutorName, topicName, topicCategory, new Timestamp(new Date()));
+
+        // delete topic from isFollowing topic list
+        dataSource.getFirebaseFirestoreInstance()
+                .collection("notifications")
+                .whereEqualTo("userName", currentUser.getUserName())
+                .whereEqualTo("tutorName", tutorName)
+                .whereEqualTo("topicName", topicName)
+                .whereEqualTo("topicCategory", topicCategory)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
-                        if(queryDocumentSnapshots != null) {
+                        if(task.isSuccessful()) {
+                            QuerySnapshot querySnapshot = task.getResult();
 
-                            for(DocumentSnapshot documentSnapshot: queryDocumentSnapshots.getDocuments()) {
+                            if(querySnapshot.isEmpty()) {
+                                Log.d(TAG, "no notification found");
+                            }
+                            else {
+                                for(DocumentSnapshot documentSnapshot: querySnapshot.getDocuments()) {
+                                    Log.d(TAG, "notification id : " + documentSnapshot.getId());
+                                }
 
-                                // TODO: Need the current user to send request to tutor
+                                for(DocumentSnapshot documentSnapshot: querySnapshot.getDocuments()) {
+                                    if(
+                                            documentSnapshot.getString("userName").equalsIgnoreCase(currentUser.getUserName()) &&
+                                                    documentSnapshot.getString("tutorName").equalsIgnoreCase(tutorName) &&
+                                                    documentSnapshot.getString("topicName").equalsIgnoreCase(topicName) &&
+                                                    documentSnapshot.getString("topicCategory").equalsIgnoreCase(topicCategory)
+                                    ) {
+                                        String documentId = documentSnapshot.getId();
 
+                                        // delete document with name topicName
+                                        documentSnapshot.getReference().delete();
+
+                                        Log.d(TAG, "notification deletion successful !");
+
+                                        break;
+                                    }
+                                }
                             }
 
                         }
-
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "notification deletion failed !");
                     }
                 });
-
-            }
-
-        }
 
     }
 
